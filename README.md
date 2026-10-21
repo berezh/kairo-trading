@@ -16,6 +16,11 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 ## Project structure
 
 - `src/app/page.tsx` — home page
+- `src/app/market-quotes.tsx` — client-side quote table
+- `src/app/providers.tsx` — Redux provider
+- `src/lib/store.ts` — Redux store configuration
+- `src/lib/features/quotes/quotesSlice.ts` — quote state and reducers
+- `src/lib/hooks.ts` — typed Redux hooks
 - `src/app/page.module.scss` — page-scoped styles
 - `src/app/globals.scss` — global styles and design tokens
 
