@@ -4,9 +4,9 @@ import dynamic from "next/dynamic";
 import { App, ConfigProvider, theme } from "antd";
 import { useState, type ReactNode } from "react";
 import { Provider } from "react-redux";
-import { makeStore, type AppStore } from "@/lib/store";
+import { makeStore, type AppStore } from "@/redux/store";
 
-const QuotesFeed = dynamic(() => import("./quotes-feed"), { ssr: false });
+const QuotesFeed = dynamic(() => import("../components/dataFeed"), { ssr: false });
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [store] = useState<AppStore>(makeStore);

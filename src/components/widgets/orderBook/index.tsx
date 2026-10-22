@@ -1,11 +1,12 @@
 "use client";
 
-import { useAppSelector } from "@/lib/hooks";
-import WidgetFrame from "@/components/widgetFrame";
+import { useAppSelector } from "@/redux/hooks";
+import { MarketSelectors } from "@/redux/features/market";
+import WidgetFrame from "@/components/widgets/frame";
 import styles from "./index.module.scss";
 
 export default function OrderBookWidget() {
-  const quotes = useAppSelector((state) => state.quotes.items);
+  const quotes = useAppSelector(MarketSelectors.selectItems);
 
   return (
     <WidgetFrame

@@ -1,4 +1,5 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { ReduxStoreState } from "@/redux/interfaces/state";
+import { createAction, createReducer, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export type Quote = {
   symbol: string;
@@ -8,7 +9,7 @@ export type Quote = {
   seq: number;
 };
 
-type QuotesState = {
+type MarketState = {
   items: Quote[];
 };
 
@@ -47,18 +48,27 @@ export const initialQuotes: Quote[] = [
     { symbol: "EURSGD", bid: "1.41246", ask: "1.41258", ts: sampleTimestamp, seq: 98242 },
 ];
 
-const initialState: QuotesState = {
+const initialState: MarketState = {
   items: initialQuotes,
 };
 
-const quotesSlice = createSlice({
-  name: "quotes",
-  initialState,
-  reducers: {
-    replaceQuotes(state, action: PayloadAction<Quote[]>) {
+export const MarketActions = {
+  init: createAction<Quote[]>("market/init"),
+  update: createAction<Quote>("market/update")
+}
+
+const baseSelector = (state: ReduxStoreState) => state.market;
+
+export const MarketSelectors = {
+  selectItems: (state: ReduxStoreState) => baseSelector(state).items,
+};
+
+export const MarketReducer = createReducer(initialState, (builder) => {
+  builder
+    .addCase(MarketActions.init, (state, action) => {
       state.items = action.payload;
-    },
-    upsertQuote(state, action: PayloadAction<Quote>) {
+    })
+    .addCase(MarketActions.update, (state, action) => {
       const index = state.items.findIndex(
         (quote) => quote.symbol === action.payload.symbol,
       );
@@ -68,9 +78,6 @@ const quotesSlice = createSlice({
       } else {
         state.items[index] = action.payload;
       }
-    },
-  },
+    });
 });
 
-export const { replaceQuotes, upsertQuote } = quotesSlice.actions;
-export default quotesSlice.reducer;

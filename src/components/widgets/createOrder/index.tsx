@@ -1,25 +1,23 @@
 "use client";
 
 import { App, Button, Form, InputNumber, Radio, Select } from "antd";
-import { useAppSelector } from "@/lib/hooks";
-import WidgetFrame from "@/components/widgetFrame";
+import { useAppSelector } from "@/redux/hooks";
+import { MarketSelectors } from "@/redux/features/market";
+import WidgetFrame from "@/components/widgets/frame";
 import styles from "./index.module.scss";
 
 type OrderFormValues = {
   symbol: string;
   side: "buy" | "sell";
-  orderType: "market" | "limit";
   quantity: number;
-  limitPrice?: number;
 };
 
 export default function CreateOrderWidget() {
   const [form] = Form.useForm<OrderFormValues>();
   const { message } = App.useApp();
-  const quotes = useAppSelector((state) => state.quotes.items);
+  const quotes = useAppSelector(MarketSelectors.selectItems);
   const symbol = Form.useWatch("symbol", form) ?? quotes[0]?.symbol;
   const side = Form.useWatch("side", form) ?? "buy";
-  const orderType = Form.useWatch("orderType", form) ?? "market";
   const selectedQuote = quotes.find((quote) => quote.symbol === symbol);
   const referencePrice =
     selectedQuote && Number(side === "buy" ? selectedQuote.ask : selectedQuote.bid);
@@ -41,7 +39,6 @@ export default function CreateOrderWidget() {
         initialValues={{
           symbol: quotes[0]?.symbol,
           side: "buy",
-          orderType: "market",
           quantity: 1000,
         }}
         requiredMark={false}
@@ -68,32 +65,6 @@ export default function CreateOrderWidget() {
             <Radio.Button value="sell">Sell</Radio.Button>
           </Radio.Group>
         </Form.Item>
-
-        <Form.Item label="Order type" name="orderType">
-          <Radio.Group className={styles.orderType}>
-            <Radio.Button value="market">Market</Radio.Button>
-            <Radio.Button value="limit">Limit</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-
-        {orderType === "limit" && (
-          <Form.Item
-            label="Limit price"
-            name="limitPrice"
-            rules={[
-              { required: true, message: "Enter a limit price." },
-              { type: "number", min: 0.00001, message: "Price must be greater than zero." },
-            ]}
-          >
-            <InputNumber
-              className={styles.orderInput}
-              min={0.00001}
-              step={symbol?.includes("JPY") ? 0.001 : 0.00001}
-              precision={symbol?.includes("JPY") ? 3 : 5}
-              stringMode={false}
-            />
-          </Form.Item>
-        )}
 
         <Form.Item
           label="Quantity"

@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { startMocking } from "@/mocks/browser";
-import { useAppDispatch } from "@/lib/hooks";
-import { upsertQuote, type Quote } from "@/lib/features/quotes/quotesSlice";
+import { useAppDispatch } from "@/redux/hooks";
+import { MarketActions, type Quote } from "@/redux/features/market";
 
 function isQuote(value: unknown): value is Quote {
   if (typeof value !== "object" || value === null) {
@@ -23,7 +23,7 @@ function isQuote(value: unknown): value is Quote {
   );
 }
 
-export default function QuotesFeed() {
+export default function DataFeed() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function QuotesFeed() {
           return;
         }
 
-        dispatch(upsertQuote(message));
+        dispatch(MarketActions.update(message));
       });
 
       socket.addEventListener("error", (event) => {

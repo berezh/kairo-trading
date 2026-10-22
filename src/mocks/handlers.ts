@@ -1,5 +1,5 @@
 import { ws } from "msw";
-import { initialQuotes, type Quote } from "@/lib/features/quotes/quotesSlice";
+import { initialQuotes, type Quote } from "@/redux/features/market";
 
 const quotesSocket = ws.link(/\/mock\/quotes$/);
 
@@ -25,11 +25,10 @@ const quotesHandler = quotesSocket.addEventListener("connection", ({ client }) =
       ts: Date.now(),
       seq: sequence++,
     };
-    console.log("Sending update:", update);
 
     client.send(JSON.stringify(update));
     quoteIndex = (quoteIndex + 1) % initialQuotes.length;
-  }, 500);
+  }, 50);
 
   client.addEventListener("close", () => clearInterval(interval));
 });
