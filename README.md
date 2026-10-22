@@ -16,12 +16,13 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 ## Project structure
 
 - `src/app/page.tsx` — home page
-- `src/components/Dashboard.tsx` — quotes and order dashboard layout
-- `src/components/widget/orderBook/index.tsx` — client-side quote table
-- `src/components/widget/orderBook/OrderBook.module.scss` — quote table styles
-- `src/components/widgets/createOrder/index.tsx` — client-only order panel
-- `src/components/widgets/createOrder/create-order.tsx` — Ant Design mock order form
-- `src/components/widgets/createOrder/CreateOrder.module.scss` — order form styles
+- `src/components/dashboard/index.tsx` — quotes and order dashboard layout
+- `src/components/widgetFrame/index.tsx` — shared widget container and heading
+- `src/components/widgetFrame/index.module.scss` — shared widget frame styles
+- `src/components/widgets/orderBook/index.tsx` — client-side quote table
+- `src/components/widgets/orderBook/index.module.scss` — quote table styles
+- `src/components/widgets/createOrder/index.tsx` — Ant Design mock order form
+- `src/components/widgets/createOrder/index.module.scss` — order form styles
 - `src/app/providers.tsx` — application-wide Ant Design theme, message context, and Redux providers
 - `src/app/quotes-feed.tsx` — development WebSocket quote feed
 - `src/lib/store.ts` — Redux store configuration

@@ -2,6 +2,7 @@
 
 import { App, Button, Form, InputNumber, Radio, Select } from "antd";
 import { useAppSelector } from "@/lib/hooks";
+import WidgetFrame from "@/components/widgetFrame";
 import styles from "./index.module.scss";
 
 type OrderFormValues = {
@@ -31,14 +32,9 @@ export default function CreateOrderWidget() {
   };
 
   return (
-    <aside className={styles.orderPanel} aria-labelledby="create-order-title">
-      <div className={styles.orderHeading}>
-        <p className={styles.panelEyebrow}>Order ticket</p>
-        <h2 className={styles.orderTitle} id="create-order-title">
-          Create order
-        </h2>
-      </div>
-
+    <WidgetFrame
+      title="Create order"
+    >
       <Form<OrderFormValues>
         form={form}
         layout="vertical"
@@ -131,6 +127,6 @@ export default function CreateOrderWidget() {
       <p className={styles.orderDisclaimer}>
         Simulated order only. No live trades will be placed.
       </p>
-    </aside>
+    </WidgetFrame>
   );
 }

@@ -1,23 +1,18 @@
 "use client";
 
 import { useAppSelector } from "@/lib/hooks";
+import WidgetFrame from "@/components/widgetFrame";
 import styles from "./index.module.scss";
 
 export default function OrderBookWidget() {
   const quotes = useAppSelector((state) => state.quotes.items);
 
   return (
-    <section className={styles.markets} id="markets" aria-labelledby="markets-title">
-      <div className={styles.marketHeading}>
-        <div>
-          <p className={styles.panelEyebrow}>Market watch</p>
-          <h2 className={styles.marketsTitle} id="markets-title">
-            Currency pairs
-          </h2>
-        </div>
-        <span className={styles.sampleNotice}>Mock feed · simulated</span>
-      </div>
-
+    <WidgetFrame
+      id="markets"
+      title="Currency pairs"
+      rightTitle={<span className={styles.sampleNotice}>Mock feed · simulated</span>}
+    >
       <div className={styles.tableScroller}>
         <table className={styles.quotesTable}>
           <caption className={styles.visuallyHidden}>
@@ -46,6 +41,6 @@ export default function OrderBookWidget() {
           </tbody>
         </table>
       </div>
-    </section>
+    </WidgetFrame>
   );
 }
