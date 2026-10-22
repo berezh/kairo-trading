@@ -1,5 +1,5 @@
 import { ReduxStoreState } from "@/redux/interfaces/state";
-import { createAction, createReducer, createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
 export type Quote = {
   symbol: string;

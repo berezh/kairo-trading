@@ -5,9 +5,13 @@ import styles from "./index.module.scss";
 
 export default function Dashboard() {
   return (
-    <div className={styles.tradingLayout}>
-      <OrderBookWidget />
-      <CreateOrderWidget />
+    <div className={styles.root}>
+      <div className={styles.market}>
+        <OrderBookWidget />
+      </div>
+      <div className={styles.order}>
+        <CreateOrderWidget />
+      </div>
     </div>
   );
 }

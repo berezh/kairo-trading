@@ -1,21 +1,43 @@
-.tradingLayout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  align-items: start;
-  gap: 20px;
-  padding-top: 36px;
-}
+@import "@/style/base.scss";
 
-@media (max-width: 850px) {
-  .tradingLayout {
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 14px;
+.root {
+  flex: 1;
+  display: grid;
+  grid-template-areas: "market order"
+          "market order"
+          "market asset";
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: repeat(3, 1fr);
+  gap: var(--layout-gap);
+
+  > div{
+    position: relative;
   }
 }
 
-@media (max-width: 600px) {
-  .tradingLayout {
-    grid-template-columns: minmax(0, 1fr);
-    padding-top: 20px;
+.market {
+  grid-area: market;
+}
+
+.order {
+  grid-area: order;
+}
+
+@include mobile {
+  .root {
+    flex: auto;
+    grid-template-areas: "market"
+                         "order"
+                         "asset";
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .market {
+    height: 500px;
+  }
+
+  .order {
+    height: 500px;
   }
 }

@@ -1,16 +1,22 @@
 .page {
   min-height: 100vh;
-  padding: 0 6vw 48px;
 }
 
 .header {
   display: flex;
-  min-height: 88px;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1320px;
-  margin: 0 auto;
+  height: var(--header-height);
   border-bottom: 1px solid var(--border);
+
+  &__content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 var(--layout-gap);
+  }
+
 }
 
 .brand {
@@ -35,92 +41,15 @@
   letter-spacing: -0.08em;
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  color: var(--muted);
-  font-size: 13px;
-
-  a {
-    transition: color 160ms ease;
-
-    &:hover {
-      color: var(--foreground);
-    }
-  }
-}
-
-.headerAction {
-  padding: 10px 15px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--foreground);
-  font-size: 12px;
-  font-weight: 600;
-  transition:
-    border-color 160ms ease,
-    background-color 160ms ease;
-
-  &:hover {
-    border-color: var(--accent);
-    background: rgb(126 231 191 / 7%);
-  }
-}
-
-.content {
-  max-width: 1320px;
-  margin: 0 auto;
-}
-
-.footer {
-  display: flex;
-  justify-content: space-between;
-  max-width: 1320px;
-  margin: 64px auto 0;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 11px;
-}
-
-@media (max-width: 600px) {
-  .page {
-    padding: 0 22px 28px;
+.main {  
+  &__content {
+    max-width: var(--content-width);
+    margin: 0 auto;
   }
 
-  .header {
-    min-height: 72px;
-  }
-
-  .brand {
-    gap: 9px;
-    font-size: 12px;
-  }
-
-  .brandMark {
-    width: 30px;
-    height: 30px;
-  }
-
-  .nav {
-    display: none;
-  }
-
-  .headerAction {
-    padding: 9px 12px;
-    font-size: 11px;
-  }
-
-  .footer {
-    gap: 14px;
-    font-size: 10px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nav a,
-  .headerAction {
-    transition: none;
+  &__flex {
+    display: flex;
+    margin: var(--layout-gap);
+    height: calc(100vh - var(--header-height) - var(--layout-gap) - var(--layout-gap));
   }
 }

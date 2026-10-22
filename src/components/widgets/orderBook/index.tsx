@@ -12,7 +12,6 @@ export default function OrderBookWidget() {
     <WidgetFrame
       id="markets"
       title="Currency pairs"
-      rightTitle={<span className={styles.sampleNotice}>Mock feed · simulated</span>}
     >
       <div className={styles.tableScroller}>
         <table className={styles.quotesTable}>

@@ -19,9 +19,9 @@ export default function WidgetFrame({
   const titleId = useId();
 
   return (
-    <aside
+    <div
       id={id}
-      className={styles.frame}
+      className={styles.root}
       aria-labelledby={titleId}
     >
       <div className={styles.header}>
@@ -30,7 +30,9 @@ export default function WidgetFrame({
         </h2>
         {rightTitle}
       </div>
-      {children}
-    </aside>
+      <div className={styles.content}>        
+        {children}
+      </div>
+    </div>
   );
 }
