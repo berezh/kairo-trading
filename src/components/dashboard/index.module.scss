@@ -1,0 +1,21 @@
+.tradingLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: start;
+  gap: 20px;
+  padding-top: 36px;
+}
+
+@media (max-width: 850px) {
+  .tradingLayout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .tradingLayout {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 20px;
+  }
+}

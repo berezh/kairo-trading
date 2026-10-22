@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Providers from "./providers";
+import "antd/dist/reset.css";
 import "./globals.scss";
 
 export const metadata: Metadata = {
@@ -11,7 +13,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <Suspense fallback={<p role="status">Loading Kairo Trading...</p>}>
+          <Providers>{children}</Providers>
+        </Suspense>
       </body>
     </html>
   );

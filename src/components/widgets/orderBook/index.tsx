@@ -1,9 +1,9 @@
 "use client";
 
 import { useAppSelector } from "@/lib/hooks";
-import styles from "./page.module.scss";
+import styles from "./index.module.scss";
 
-export default function MarketQuotes() {
+export default function OrderBookWidget() {
   const quotes = useAppSelector((state) => state.quotes.items);
 
   return (

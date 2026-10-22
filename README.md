@@ -1,6 +1,6 @@
 # Kairo Trading
 
-A Next.js app built with TypeScript and SCSS modules.
+A Next.js app built with TypeScript, SCSS modules, Ant Design, and Redux Toolkit.
 
 ## Getting started
 
@@ -16,8 +16,13 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 ## Project structure
 
 - `src/app/page.tsx` — home page
-- `src/app/market-quotes.tsx` — client-side quote table
-- `src/app/providers.tsx` — Redux provider
+- `src/components/Dashboard.tsx` — quotes and order dashboard layout
+- `src/components/widget/orderBook/index.tsx` — client-side quote table
+- `src/components/widget/orderBook/OrderBook.module.scss` — quote table styles
+- `src/components/widgets/createOrder/index.tsx` — client-only order panel
+- `src/components/widgets/createOrder/create-order.tsx` — Ant Design mock order form
+- `src/components/widgets/createOrder/CreateOrder.module.scss` — order form styles
+- `src/app/providers.tsx` — application-wide Ant Design theme, message context, and Redux providers
 - `src/app/quotes-feed.tsx` — development WebSocket quote feed
 - `src/lib/store.ts` — Redux store configuration
 - `src/lib/features/quotes/quotesSlice.ts` — quote state and reducers
