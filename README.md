@@ -8,8 +8,12 @@ Install dependencies and start the development server:
 
 ```bash
 npm install
-npm run dev
+npm run dev:ws
 ```
+
+This launches the WebSocket mock first, then Next.js via `npm run dev`, without
+waiting for mock readiness. Press Ctrl+C to stop both;
+if either process exits, the other is stopped as well.
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
@@ -30,14 +34,22 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 - `src/lib/store.ts` — Redux store configuration
 - `src/lib/features/quotes/quotesSlice.ts` — quote state and reducers
 - `src/lib/hooks.ts` — typed Redux hooks
-- `src/mocks/handlers.ts` — MSW WebSocket mock handlers
-- `src/mocks/browser.ts` — MSW browser worker
+- `scripts/mock-quotes.ts` — standalone Node WebSocket mock server
+- `src/mocks/data.ts` — initial mock pairs and assets
 - `src/app/page.module.scss` — page-scoped styles
 - `src/app/globals.scss` — global styles and design tokens
 
-The quote stream is mocked in development with MSW. Its service worker is
-generated at `public/mockServiceWorker.js` by running `npx msw init public`.
-It is not used in production.
+The development quote feed connects to `ws://127.0.0.1:3002/mock/quotes`.
+The Node mock server maintains one shared in-memory snapshot and continues updating
+it even without connected browsers. Reloads and additional tabs receive the latest
+200 pairs before live updates. Restarting the mock server resets the data.
+The feed is not used in production.
+
+Set `MOCK_WS_PORT` to change the server port and `NEXT_PUBLIC_MOCK_WS_URL` to change
+the browser's endpoint (restart Next.js after changing it). HTTPS pages need a
+secure `wss://` endpoint, for example through a local TLS proxy. The server binds
+only to `127.0.0.1`; `http://127.0.0.1:3002/health` reports readiness.
+No MSW service worker is started or required.
 
 The currency-pair table uses TanStack Virtual to render only visible rows plus
 five overscan rows on either side. Vertical scrolling stays inside the table body
@@ -57,7 +69,9 @@ Keep these render callbacks inside a Client Component.
 
 ## Scripts
 
-- `npm run dev` — start the development server
+- `npm run dev` — start Next.js only
+- `npm run dev:ws` — launch the WebSocket mock first and Next.js together
+- `npm run mock:ws` — run the persistent-in-memory WebSocket mock
 - `npm run build` — create a production build
 - `npm run start` — start the production server
 - `npm run lint` — run ESLint

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { startMocking } from "@/mocks/browser";
 import { useAppDispatch } from "@/redux/hooks";
 import { MarketActions } from "@/redux/features/market";
 import type { AssetPairRecord } from "@/interfaces/data";
@@ -32,57 +31,44 @@ export default function DataFeed() {
       return;
     }
 
-    let socket: WebSocket | undefined;
-    let cancelled = false;
+    const socket = new WebSocket(
+      process.env.NEXT_PUBLIC_MOCK_WS_URL ?? "ws://127.0.0.1:3002/mock/quotes",
+    );
 
-    const startFeed = async () => {
-      await startMocking();
-
-      if (cancelled) {
+    socket.addEventListener("message", (event: MessageEvent<unknown>) => {
+      if (typeof event.data !== "string") {
+        console.error("Ignoring a non-text message from the mock quotes socket.");
         return;
       }
 
-      const socketUrl = new URL("/mock/quotes", window.location.href);
-      socketUrl.protocol = socketUrl.protocol === "https:" ? "wss:" : "ws:";
-      socket = new WebSocket(socketUrl);
+      let message: unknown;
 
-      socket.addEventListener("message", (event: MessageEvent<unknown>) => {
-        if (typeof event.data !== "string") {
-          console.error("Ignoring a non-text message from the mock quotes socket.");
-          return;
-        }
+      try {
+        message = JSON.parse(event.data);
+      } catch (error) {
+        console.error("Failed to parse a message from the mock quotes socket.", error);
+        return;
+      }
 
-        let message: unknown;
+      if (!isQuote(message)) {
+        console.error("Ignoring an invalid quote message from the mock quotes socket.");
+        return;
+      }
 
-        try {
-          message = JSON.parse(event.data);
-        } catch (error) {
-          console.error("Failed to parse a message from the mock quotes socket.", error);
-          return;
-        }
+      dispatch(MarketActions.update(message));
+    });
 
-        if (!isQuote(message)) {
-          console.error("Ignoring an invalid quote message from the mock quotes socket.");
-          return;
-        }
-
-        dispatch(MarketActions.update(message));
-      });
-
-      socket.addEventListener("error", (event) => {
-        console.error("The mock quotes WebSocket encountered an error.", event);
-      });
-    };
-
-    void startFeed().catch((error: unknown) => {
-      if (!cancelled) {
-        console.error("Failed to start the mock quotes WebSocket feed.", error);
+    socket.addEventListener("error", (event) => {
+      console.error("The mock quotes WebSocket encountered an error.", event);
+    });
+    socket.addEventListener("close", (event) => {
+      if (!event.wasClean) {
+        console.error("The mock quotes WebSocket closed unexpectedly. Run npm run mock:ws.", event);
       }
     });
 
     return () => {
-      cancelled = true;
-      socket?.close();
+      socket.close();
     };
   }, [dispatch]);
 

@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev:ws": "concurrently --kill-others --names mock,next \"npm run mock:ws\" \"npm run dev\"",
     "dev": "next dev",
+    "mock:ws": "tsx scripts/mock-quotes.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -15,7 +17,6 @@
     "@types/numeral": "^2.0.5",
     "antd": "^6.6.7",
     "classnames": "^2.5.1",
-    "msw": "^3.0.3",
     "next": "16.4.2",
     "numeral": "^2.0.6",
     "randex": "^1.6.0",
@@ -27,9 +28,13 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
+    "concurrently": "^9.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
     "sass": "^1.106.0",
-    "typescript": "^5"
+    "tsx": "^4.20.0",
+    "typescript": "^5",
+    "ws": "^8.18.3"
   }
 }
