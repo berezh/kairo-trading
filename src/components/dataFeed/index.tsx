@@ -3,9 +3,10 @@
 import { useEffect } from "react";
 import { startMocking } from "@/mocks/browser";
 import { useAppDispatch } from "@/redux/hooks";
-import { MarketActions, type Quote } from "@/redux/features/market";
+import { MarketActions } from "@/redux/features/market";
+import type { AssetPairRecord } from "@/interfaces/data";
 
-function isQuote(value: unknown): value is Quote {
+function isQuote(value: unknown): value is AssetPairRecord {
   if (typeof value !== "object" || value === null) {
     return false;
   }

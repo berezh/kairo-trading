@@ -1,5 +1,6 @@
 import { ws } from "msw";
-import { initialQuotes, type Quote } from "@/redux/features/market";
+import { initialQuotes } from "@/redux/features/market";
+import type { AssetPairRecord } from "@/interfaces/data";
 
 const quotesSocket = ws.link(/\/mock\/quotes$/);
 
@@ -18,7 +19,7 @@ const quotesHandler = quotesSocket.addEventListener("connection", ({ client }) =
     const spread = Math.max(1, Math.round((Number(quote.ask) - Number(quote.bid)) * scale));
     const tick = (sequence % 7) - 3;
     const bid = Math.max(1, Math.round(Number(quote.bid) * scale) + tick);
-    const update: Quote = {
+    const update: AssetPairRecord = {
       ...quote,
       bid: (bid / scale).toFixed(precision),
       ask: ((bid + spread) / scale).toFixed(precision),

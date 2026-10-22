@@ -1,0 +1,83 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--widget-border-radius);
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: left;
+
+  thead,
+  tbody {
+    display: block;
+    scrollbar-gutter: stable;
+  }
+
+  thead {
+    flex-shrink: 0;
+    overflow-y: hidden;
+    color: var(--muted);
+    background: rgb(255 255 255 / 2%);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  tbody {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  th,
+  td {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  thead th {
+    font-weight: 500;
+  }
+
+  thead th:not(:first-child),
+  td {
+    text-align: right;
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tbody tr {
+    transition: background-color 120ms ease;
+
+    &:hover {
+      background: rgb(255 255 255 / 2%);
+    }
+  }
+
+  tbody th {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  td {
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .spacer td {
+    padding: 0;
+    border: 0;
+  }
+}

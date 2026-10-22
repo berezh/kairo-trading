@@ -2,12 +2,14 @@
 
 import { useId, type ReactNode } from "react";
 import styles from "./index.module.scss";
+import classNames from "classnames";
 
 type WidgetFrameProps = {
   children: ReactNode;
   title: string;
   rightTitle?: ReactNode;
   id?: string;
+  contentClassName?: string;
 };
 
 export default function WidgetFrame({
@@ -15,6 +17,7 @@ export default function WidgetFrame({
   title,
   rightTitle,
   id,
+  contentClassName,
 }: WidgetFrameProps) {
   const titleId = useId();
 
@@ -30,7 +33,7 @@ export default function WidgetFrame({
         </h2>
         {rightTitle}
       </div>
-      <div className={styles.content}>        
+      <div className={classNames(styles.content, contentClassName)}>        
         {children}
       </div>
     </div>

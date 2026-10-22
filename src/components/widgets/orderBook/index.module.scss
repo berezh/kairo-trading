@@ -1,81 +1,12 @@
-.sampleNotice {
-  padding: 8px 11px;
-  border: 1px solid rgb(255 197 107 / 20%);
-  border-radius: 999px;
-  color: #ffc56b;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.tableScroller {
-  overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.quotesTable {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-
-  thead {
-    color: var(--muted);
-    background: rgb(255 255 255 / 2%);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-  }
-
-  th,
-  td {
-    padding: 13px 18px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  thead th {
-    font-weight: 500;
-  }
-
-  thead th:not(:first-child),
-  td {
-    text-align: right;
-  }
-
-  thead span {
-    color: #66736d;
-    font-weight: 400;
-  }
-
-  tbody tr:last-child th,
-  tbody tr:last-child td {
-    border-bottom: 0;
-  }
-
-  tbody tr {
-    transition: background-color 120ms ease;
-
-    &:hover {
-      background: rgb(255 255 255 / 2%);
-    }
-  }
-
-  tbody th {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  td {
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    font-variant-numeric: tabular-nums;
-  }
+.headerHint {
+  color: #66736d;
+  font-weight: 400;
 }
 
 .pairMark {
-  display: grid;
+  display: inline-grid;
+  margin-right: 11px;
+  vertical-align: middle;
   width: 34px;
   height: 26px;
   place-items: center;
@@ -95,28 +26,26 @@
   color: var(--accent);
 }
 
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  clip-path: inset(50%);
+.widgetContent{
+  padding: 0;
 }
 
-@media (max-width: 600px) {
-  .sampleNotice {
-    padding: 7px 8px;
-    font-size: 9px;
-  }
+.virtualTable {
+  border:none;
+  border-radius: 0;
+}
 
-  .quotesTable {
-    min-width: 380px;
+.updated {
+  animation: quoteFlash 450ms ease-out;
+}
 
-    th,
-    td {
-      padding: 12px 10px;
-    }
+@keyframes quoteFlash {
+  from { background-color: rgba(59, 252, 0, 0.1); }
+  to { background-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .updated {
+    animation: none;
   }
 }

@@ -1,21 +1,14 @@
-import { ReduxStoreState } from "@/redux/interfaces/state";
+import { ReduxStoreState } from "@/interfaces/state";
+import type { AssetPairRecord } from "@/interfaces/data";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
-export type Quote = {
-  symbol: string;
-  bid: string;
-  ask: string;
-  ts: number;
-  seq: number;
+export interface MarketState {
+  items: AssetPairRecord[];
 };
 
-type MarketState = {
-  items: Quote[];
-};
+const sampleTimestamp = new Date().getTime();
 
-const sampleTimestamp = 1759830930123;
-
-export const initialQuotes: Quote[] = [
+export const initialQuotes: AssetPairRecord[] = [
     { symbol: "EURUSD", bid: "1.08412", ask: "1.08415", ts: sampleTimestamp, seq: 98213 },
     { symbol: "USDJPY", bid: "149.382", ask: "149.386", ts: sampleTimestamp, seq: 98214 },
     { symbol: "GBPUSD", bid: "1.29740", ask: "1.29745", ts: sampleTimestamp, seq: 98215 },
@@ -53,8 +46,8 @@ const initialState: MarketState = {
 };
 
 export const MarketActions = {
-  init: createAction<Quote[]>("market/init"),
-  update: createAction<Quote>("market/update")
+  init: createAction<AssetPairRecord[]>("market/init"),
+  update: createAction<AssetPairRecord>("market/update")
 }
 
 const baseSelector = (state: ReduxStoreState) => state.market;
@@ -80,4 +73,3 @@ export const MarketReducer = createReducer(initialState, (builder) => {
       }
     });
 });
-
