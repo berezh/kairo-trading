@@ -3,21 +3,23 @@ import { useEffect, useRef, useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { MarketSelectors } from "@/redux/features/market";
 import type { AssetPairRecord } from "@/interfaces/data";
+import { parsePairSymbol } from "@/utils/parsePairSymbol";
 import WidgetFrame from "@/components/widgets/frame";
 import VirtualTable from "@/components/virtualTable";
 import styles from "./index.module.scss";
 
 interface AssetPairRecordExtended extends AssetPairRecord {
-  prevTs: number;
+  isUpdated: boolean;
 }
 
 export default function OrderBookWidget() {
   const initData = useAppSelector(MarketSelectors.selectItems);
   const [data, setData] = useState<AssetPairRecordExtended[]>(() =>
-    initData.map((record) => ({ ...record, prevTs: record.ts })),
+    initData.map((record) => ({ ...record, isUpdated: false })),
   );
   const latestData = useRef(initData);
   const appliedData = useRef(initData);
+  const updatedCount = useRef(0);
 
   useEffect(() => {
     latestData.current = initData;
@@ -29,6 +31,7 @@ export default function OrderBookWidget() {
       if (snapshot === appliedData.current) return;
 
       appliedData.current = snapshot;
+      updatedCount.current = 0;
       setData((previousData) => {
         const previousBySymbol = new Map(
           previousData.map((record) => [record.symbol, record]),
@@ -36,14 +39,16 @@ export default function OrderBookWidget() {
 
         return snapshot.map((record) => {
           const previous = previousBySymbol.get(record.symbol);
+          const isUpdated = previous?.ts !== record.ts;
+          if (isUpdated) updatedCount.current++;
 
           return {
             ...record,
-            prevTs: previous?.ts ?? record.ts,
+            isUpdated,
           };
         });
       });
-    }, 500);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -51,7 +56,7 @@ export default function OrderBookWidget() {
   return (
     <WidgetFrame
       id="markets"
-      title="Currency pairs"
+      title={`Watchlist${updatedCount.current ? ` (${updatedCount.current}/sec)` : ""}`}
       contentClassName={styles.widgetContent}
     >
       <VirtualTable<AssetPairRecordExtended>
@@ -70,11 +75,11 @@ export default function OrderBookWidget() {
           <tr
             key={key}
             {...rowProps}
-            className={record.prevTs !== record.ts ? styles.updated : ""}
+            className={record.isUpdated ? styles.updated : ""}
           >
             <th scope="row">
               <span className={styles.pairMark} aria-hidden="true">
-                {record.symbol.slice(0, 3)}
+                {parsePairSymbol(record.symbol).baseSymbol}
               </span>
               {record.symbol}
             </th>

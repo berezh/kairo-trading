@@ -15,10 +15,10 @@ type OrderFormValues = {
 export default function CreateOrderWidget() {
   const [form] = Form.useForm<OrderFormValues>();
   const { message } = App.useApp();
-  const quotes = useAppSelector(MarketSelectors.selectItems);
-  const symbol = Form.useWatch("symbol", form) ?? quotes[0]?.symbol;
+  const data = useAppSelector(MarketSelectors.selectItems);
+  const symbol = Form.useWatch("symbol", form) ?? data[0]?.symbol;
   const side = Form.useWatch("side", form) ?? "buy";
-  const selectedQuote = quotes.find((quote) => quote.symbol === symbol);
+  const selectedQuote = data.find((quote) => quote.symbol === symbol);
   const referencePrice =
     selectedQuote && Number(side === "buy" ? selectedQuote.ask : selectedQuote.bid);
 
@@ -37,7 +37,7 @@ export default function CreateOrderWidget() {
         form={form}
         layout="vertical"
         initialValues={{
-          symbol: quotes[0]?.symbol,
+          symbol: data[0]?.symbol,
           side: "buy",
           quantity: 1000,
         }}
@@ -52,7 +52,7 @@ export default function CreateOrderWidget() {
           <Select
             showSearch
             optionFilterProp="label"
-            options={quotes.map((quote) => ({
+            options={data.map((quote) => ({
               value: quote.symbol,
               label: quote.symbol,
             }))}

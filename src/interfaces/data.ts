@@ -5,3 +5,9 @@ export interface AssetPairRecord {
   ts: number;
   seq: number;
 }
+
+
+export interface AssetRecord {
+  symbol: string;
+  precision: number;
+}
