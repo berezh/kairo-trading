@@ -3,27 +3,12 @@
   font-weight: 400;
 }
 
-.pairMark {
-  display: inline-grid;
-  margin-right: 11px;
-  vertical-align: middle;
-  width: 34px;
-  height: 26px;
-  place-items: center;
-  border-radius: 6px;
-  color: var(--muted);
-  background: rgb(255 255 255 / 5%);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-}
-
 .sellPrice {
-  color: #ff9c9c;
+  color: var(--sell-color);
 }
 
 .buyPrice {
-  color: var(--accent);
+  color: var(--buy-color);
 }
 
 .widgetContent{
@@ -48,4 +33,10 @@
   .updated {
     animation: none;
   }
+}
+
+.updateCount {
+  font-weight: 500;
+  color: #888;
+  font-size: 12px;
 }

@@ -7,7 +7,7 @@ let workerStartPromise: ReturnType<typeof worker.start> | undefined;
 
 export function startMocking() {
   if (!workerStartPromise) {
-    workerStartPromise = worker.start({ onUnhandledFrame: "bypass" }).catch((error: unknown) => {
+    workerStartPromise = worker.start({ onUnhandledFrame: "bypass", quiet: true }).catch((error: unknown) => {
       workerStartPromise = undefined;
       throw error;
     });

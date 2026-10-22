@@ -61,3 +61,9 @@ Keep these render callbacks inside a Client Component.
 - `npm run build` — create a production build
 - `npm run start` — start the production server
 - `npm run lint` — run ESLint
+
+## Ideas
+
+- Search by pairs
+- Sort columns
+- Assets widget with values 

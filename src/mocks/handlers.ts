@@ -27,9 +27,12 @@ const quotesHandler = quotesSocket.addEventListener("connection", ({ client }) =
     const { exchangeSymbol } = parsePairSymbol(pair.symbol);
     const precision = INIT_ASSETS.find((asset) => asset.symbol === exchangeSymbol)?.precision || 5;
     const scale = 10 ** precision;
-    const spread = Math.max(1, Math.round((Number(pair.ask) - Number(pair.bid)) * scale));
-    const tick = (sequence % 7) - 3;
-    const bid = Math.max(1, Math.round(Number(pair.bid) * scale) + tick);
+    const initialBid = Math.round(Number(pair.bid) * scale);
+    const maxChange = Math.floor(initialBid * 0.001);
+    const tick = Randex.number(-maxChange, maxChange);
+    const bid = Math.max(1, initialBid + tick);
+    const spreadPercent = Randex.number(0.05, 0.2, { decimals: 4 });
+    const spread = Math.max(1, Math.round(bid * spreadPercent / 100));
     const update: AssetPairRecord = {
       ...pair,
       bid: (bid / scale).toFixed(precision),
