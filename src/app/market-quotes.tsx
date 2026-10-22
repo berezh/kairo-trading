@@ -15,13 +15,13 @@ export default function MarketQuotes() {
             Currency pairs
           </h2>
         </div>
-        <span className={styles.sampleNotice}>Sample prices · not live</span>
+        <span className={styles.sampleNotice}>Mock feed · simulated</span>
       </div>
 
       <div className={styles.tableScroller}>
         <table className={styles.quotesTable}>
           <caption className={styles.visuallyHidden}>
-            Sample bid and ask prices for {quotes.length} currency pairs. Prices are not live.
+            Simulated bid and ask prices for {quotes.length} currency pairs.
           </caption>
           <thead>
             <tr>

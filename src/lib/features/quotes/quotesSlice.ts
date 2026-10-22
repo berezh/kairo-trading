@@ -14,8 +14,7 @@ type QuotesState = {
 
 const sampleTimestamp = 1759830930123;
 
-const initialState: QuotesState = {
-  items: [
+export const initialQuotes: Quote[] = [
     { symbol: "EURUSD", bid: "1.08412", ask: "1.08415", ts: sampleTimestamp, seq: 98213 },
     { symbol: "USDJPY", bid: "149.382", ask: "149.386", ts: sampleTimestamp, seq: 98214 },
     { symbol: "GBPUSD", bid: "1.29740", ask: "1.29745", ts: sampleTimestamp, seq: 98215 },
@@ -46,7 +45,10 @@ const initialState: QuotesState = {
     { symbol: "NZDCHF", bid: "0.52018", ask: "0.52025", ts: sampleTimestamp, seq: 98240 },
     { symbol: "USDSGD", bid: "1.30214", ask: "1.30222", ts: sampleTimestamp, seq: 98241 },
     { symbol: "EURSGD", bid: "1.41246", ask: "1.41258", ts: sampleTimestamp, seq: 98242 },
-  ],
+];
+
+const initialState: QuotesState = {
+  items: initialQuotes,
 };
 
 const quotesSlice = createSlice({
