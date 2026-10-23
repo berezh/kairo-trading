@@ -105,7 +105,6 @@ describe("OrderBookWidget", () => {
     expect(screen.getByText("(1 updated / sec)")).toBeInTheDocument();
     const row = screen.getByRole("rowheader", { name: /EURUSD/ }).closest("tr")!;
     expect(row).toHaveClass("updatedPlus");
-    expect(within(row).getByText("Up")).toBeInTheDocument();
     expect(within(row).getByText("10%")).toHaveClass("buyPrice");
 
     act(() => {
@@ -117,7 +116,6 @@ describe("OrderBookWidget", () => {
 
     expect(screen.getByText("1.00000")).toBeInTheDocument();
     expect(row).toHaveClass("updatedMinus");
-    expect(within(row).getByText("Down")).toBeInTheDocument();
     expect(within(row).getByText("-10%")).toHaveClass("sellPrice");
   });
 
