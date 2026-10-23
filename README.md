@@ -94,6 +94,12 @@ explicitly (`<tr key={key} {...rowProps}>`), spreading the remaining props onto 
 row to preserve measurement and accessibility attributes.
 Keep these render callbacks inside a Client Component.
 
+The Chart column uses Recharts through `RowPriceChart`. Each mounted row stores
+midpoint prices (`(bid + ask) / 2`) and quote timestamps in component state,
+appending a point when either changes. The line uses timestamps for its horizontal
+axis and skips duplicate samples. History is local to the row and resets when
+virtualization unmounts it or its symbol changes.
+
 ## Mock orders and dialogs
 
 The mock order form supports Market and Limit orders. Limit orders require a

@@ -9,10 +9,12 @@ import styles from "./index.module.scss";
 import numeral from "numeral";
 import classNames from "classnames";
 import { MarketActions } from "@/redux/units/market/action";
+import RowPriceChart from "./chart";
 
-interface AssetPairRecordExtended extends AssetPairRecord {
+export interface AssetPairRecordExtended extends AssetPairRecord {
   isUpdated: boolean;
   change: number;
+  mid: number;
   spread: number;
   prevChange: number;
 }
@@ -22,7 +24,7 @@ export default function OrderBookWidget() {
   const initData = useAppSelector(MarketSelectors.records);
   const openItems = useAppSelector(MarketSelectors.openRecords);
   const [data, setData] = useState<AssetPairRecordExtended[]>(() =>
-    initData.map((record) => ({ ...record, isUpdated: false, change: 0, spread: Number(record.ask) - Number(record.bid), prevChange: 0 })),
+    initData.map((record) => ({ ...record, isUpdated: false, change: 0, spread: Number(record.ask) - Number(record.bid), prevChange: 0, mid: (Number(record.ask) + Number(record.bid)) / 2 })),
   );
   
   const updatedCount = useMemo(()=> data.filter(record => record.isUpdated).length, [data]);
@@ -55,7 +57,7 @@ export default function OrderBookWidget() {
 
         const openingRecord = openItems.find(item => item.symbol === record.symbol);
         const mid = (Number(record.ask) + Number(record.bid)) / 2;
-        const prevMid = previous ? (Number(previous.ask) + Number(previous.bid)) / 2 : mid;
+        const prevMid = previous?.mid || mid;
         const openingMid = openingRecord ? (Number(openingRecord.ask) + Number(openingRecord.bid)) / 2 : mid;
 
         const change = mid - openingMid;
@@ -66,6 +68,7 @@ export default function OrderBookWidget() {
           change,
           prevChange: mid - prevMid,
           spread: Number(record.ask) - Number(record.bid),
+          mid,
         };
       });
     });
@@ -92,7 +95,7 @@ export default function OrderBookWidget() {
       <VirtualTable<AssetPairRecordExtended>
         className={styles.virtualTable}
         items={data}
-        columnCount={4}
+        columnCount={6}
         getItemKey={(x) => x.symbol}
         renderHeader={(rowProps) => (
           <tr {...rowProps}>
@@ -101,6 +104,7 @@ export default function OrderBookWidget() {
             <th scope="col">Buy <span className={styles.headerHint}>(Ask)</span></th>
             <th scope="col">Spread</th>
             <th scope="col">Opening</th>
+            <th scope="col">Chart</th>
           </tr>
         )}
         renderRow={({ key, ...rowProps }, record) => {
@@ -122,6 +126,7 @@ export default function OrderBookWidget() {
               <td className={styles.buyPrice}>{record.ask}</td>
               <td>{numeral(record.spread).format("0.[00000]")}</td>
               <td className={record.change > 0 ? styles.buyPrice : record.change < 0 ? styles.sellPrice : ""}>{numeral(record.change).format("0.[0000]%")}</td>
+              <td><RowPriceChart record={record} /></td>
             </tr>
         );}}
       />
