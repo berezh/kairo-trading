@@ -3,6 +3,20 @@
   font-weight: 400;
 }
 
+.headerControls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.symbolSearch {
+  width: 160px;
+  max-width: 100%;
+}
+
 .row {
   cursor: pointer;
 }

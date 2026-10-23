@@ -21,7 +21,7 @@ Below is result of 10 sec manipulation with Whatchlist and CreateOrder widgets:
 
 - User's order history
 - User's assets 
-- Pair's search and filtering
+- Pair's filtering
 - Pair's sorting
 - Favorites market
 - Spread chart
@@ -141,6 +141,10 @@ only to `127.0.0.1`; `http://127.0.0.1:3002/health` reports readiness.
 No MSW service worker is started or required.
 
 ## Virtualized watchlist
+
+The watchlist header includes a clearable symbol search. It matches partial symbols
+case-insensitively, ignores surrounding spaces, and keeps filtering as live quotes
+update. Clearing the input restores all rows.
 
 The currency-pair table uses TanStack Virtual to render only visible rows plus
 five overscan rows on either side. Vertical scrolling stays inside the table body

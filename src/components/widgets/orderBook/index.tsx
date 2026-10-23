@@ -10,6 +10,7 @@ import numeral from "numeral";
 import classNames from "classnames";
 import { MarketActions } from "@/redux/units/market/action";
 import RowPriceChart from "./chart";
+import { Input } from "antd";
 
 export interface AssetPairRecordExtended extends AssetPairRecord {
   isUpdated: boolean;
@@ -21,6 +22,7 @@ export interface AssetPairRecordExtended extends AssetPairRecord {
 
 export default function OrderBookWidget() {
   const dispatch = useAppDispatch();
+  const [search, setSearch] = useState("");
   const initData = useAppSelector(MarketSelectors.records);
   const openItems = useAppSelector(MarketSelectors.openRecords);
   const [data, setData] = useState<AssetPairRecordExtended[]>(() =>
@@ -28,6 +30,10 @@ export default function OrderBookWidget() {
   );
   
   const updatedCount = useMemo(()=> data.filter(record => record.isUpdated).length, [data]);
+  const filteredData = useMemo(() => {
+    const query = search.trim().toUpperCase();
+    return data.filter((record) => record.symbol.toUpperCase().includes(query));
+  }, [data, search]);
 
   const updateData = useEffectEvent(() => {
     setData((previousData) => {
@@ -84,12 +90,24 @@ export default function OrderBookWidget() {
     <WidgetFrame
       id="markets"
       title="Watchlist"
-      rightTitle={<div className={styles.updateCount}>{updatedCount ? `(${updatedCount} updated / sec)` : ""}</div>}
+      rightTitle={
+        <div className={styles.headerControls}>
+          <div className={styles.updateCount}>{updatedCount ? `(${updatedCount} updated / sec)` : ""}</div>
+          <Input
+            className={styles.symbolSearch}
+            aria-label="Search symbols"
+            placeholder="Search symbols"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            allowClear
+          />
+        </div>
+      }
       contentClassName={styles.widgetContent}
     >
       <VirtualTable<AssetPairRecordExtended>
         className={styles.virtualTable}
-        items={data}
+        items={filteredData}
         columnCount={6}
         getItemKey={(x) => x.symbol}
         renderHeader={(rowProps) => (

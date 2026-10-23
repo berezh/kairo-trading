@@ -124,6 +124,8 @@ describe("OrderBookWidget", () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
     await user.tab();
+    expect(screen.getByRole("textbox", { name: "Search symbols" })).toHaveFocus();
+    await user.tab();
     expect(screen.getByLabelText("Scrollable table rows")).toHaveFocus();
     await user.tab();
     expect(screen.getByRole("button", { name: "Sell EURUSD at 1.10000" })).toHaveFocus();
@@ -135,12 +137,43 @@ describe("OrderBookWidget", () => {
     expect(store.getState().market.activeRecord?.side).toBe("buy");
   });
 
+  it("filters symbols case-insensitively and restores rows when cleared", () => {
+    renderWidget([quote, { ...quote, symbol: "USDJPY" }]);
+    const search = screen.getByRole("textbox", { name: "Search symbols" });
+    fireEvent.change(search, { target: { value: " eur " } });
+    expect(screen.getByRole("rowheader", { name: "EURUSD" })).toBeInTheDocument();
+    expect(screen.queryByRole("rowheader", { name: "USDJPY" })).not.toBeInTheDocument();
+    fireEvent.change(search, { target: { value: "missing" } });
+    expect(screen.queryByRole("rowheader")).not.toBeInTheDocument();
+    fireEvent.change(search, { target: { value: "" } });
+    expect(screen.getAllByRole("rowheader")).toHaveLength(2);
+  });
+
+  it("keeps the filter while quotes update", () => {
+    const { store } = renderWidget([quote, { ...quote, symbol: "USDJPY" }]);
+    fireEvent.change(screen.getByRole("textbox", { name: "Search symbols" }), {
+      target: { value: "eur" },
+    });
+    act(() => {
+      store.dispatch(MarketActions.update([{ ...quote, ask: "1.30000", seq: 2, ts: 2 }]));
+    });
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(screen.getByText("1.30000")).toBeInTheDocument();
+    expect(screen.getAllByRole("rowheader")).toHaveLength(1);
+  });
+
   it("clears the sampling interval on unmount", () => {
+    const setIntervalSpy = jest.spyOn(globalThis, "setInterval");
+    const clearIntervalSpy = jest.spyOn(globalThis, "clearInterval");
     const { unmount } = renderWidget();
-    expect(jest.getTimerCount()).toBe(1);
+    const samplingCall = setIntervalSpy.mock.calls.findIndex(([, delay]) => delay === 1000);
+    expect(samplingCall).toBeGreaterThanOrEqual(0);
+    const interval = setIntervalSpy.mock.results[samplingCall].value;
 
     unmount();
 
-    expect(jest.getTimerCount()).toBe(0);
+    expect(clearIntervalSpy).toHaveBeenCalledWith(interval);
+    setIntervalSpy.mockRestore();
+    clearIntervalSpy.mockRestore();
   });
 });
