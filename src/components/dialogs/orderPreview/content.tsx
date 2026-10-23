@@ -8,11 +8,13 @@ import { useAppDispatch, useAppSelector, useAppStore } from "@/redux/hooks";
 import { DialogActions } from "@/redux/units/dialog/action";
 import { parsePairSymbol } from "@/utils/parsePairSymbol";
 import { MarketSelectors } from "@/redux/units/market/selector";
+import { CommonSelectors } from "@/redux/units/common/selector";
 import styles from "./content.module.scss";
 
 export default function OrderPreviewDialogContent({ order }: { order: OrderPreviewData }) {
   const dispatch = useAppDispatch();
   const store = useAppStore();
+  const connected = useAppSelector(CommonSelectors.connected);
   const { message } = App.useApp();
   const { baseSymbol, exchangeSymbol } = parsePairSymbol(order.symbol);
   const total = (order.price * order.quantity).toFixed(order.precision);
@@ -100,11 +102,15 @@ export default function OrderPreviewDialogContent({ order }: { order: OrderPrevi
           className={`${styles.submitOrder} ${order.side === "buy" ? styles.buyDirection : styles.sellDirection}`}
           type="primary"
           onClick={handleSubmit}
-          block
+          block      
+          disabled={!connected}
         >
           Submit {order.side === "buy" ? "Buy" : "Sell"}
         </Button>
-        <Button onClick={() => dispatch(DialogActions.hide("orderPreview"))} block>
+        <Button
+          onClick={() => dispatch(DialogActions.hide("orderPreview"))}
+          block
+        >
           Cancel
         </Button>
       </div>

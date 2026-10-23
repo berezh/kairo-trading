@@ -174,7 +174,14 @@ export default function CreateOrderWidget() {
           <div className={styles.orderReference}>
             <span>Current {side === "buy" ? "ask" : "bid"}</span>
             <strong className={side === "buy" ? styles.buyDirection : styles.sellDirection}>
-              {referencePrice.toFixed(pricePrecision)}
+              <button
+                type="button"
+                className={styles.referencePriceButton}
+                onClick={() => form.setFieldsValue({ limitPrice: referencePrice })}
+                aria-label="Set limit price to current price"
+              >
+                {referencePrice.toFixed(pricePrecision)}
+              </button>
             </strong>
           </div>
         )}

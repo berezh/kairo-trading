@@ -50,6 +50,20 @@
   }
 }
 
+.referencePriceButton {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+}
+
 .submitOrder {
   height: 42px;
   color: #081713;
