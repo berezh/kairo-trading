@@ -31,6 +31,10 @@ export default function OrderPreviewDialogContent({ order }: { order: OrderPrevi
     : "--";
 
   const requestPriceConfirmation = useCallback((price: number | undefined) => {
+    if (order.orderType === "market") {
+      return false;
+    }
+
     if (store.getState().dialog.orderPreview !== order) {
       return false;
     }

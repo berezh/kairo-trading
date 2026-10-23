@@ -126,7 +126,8 @@ backdrop also dismiss the dialog.
 
 If live ask rises above the preview price for Buy, or live bid falls below it for
 Sell, the preview is replaced by a Price confirmation dialog. This applies to
-both Market and Limit previews, with no tolerance threshold. Confirm price change
+Limit previews only, with no tolerance threshold; Market previews never open price
+confirmation. Confirm price change
 reopens the preview using the displayed new price and recalculates the total;
 Cancel dismisses it without submitting. Further adverse changes require another
 confirmation. Submission checks the latest quote again before showing success.
