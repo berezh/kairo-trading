@@ -15,6 +15,11 @@ export default function Providers({ children }: { children: ReactNode }) {
     <ConfigProvider
       theme={{
         algorithm: theme.darkAlgorithm,
+        components: {
+          Button: {
+            primaryColor: "#000",
+          },
+        },
         token: {
           colorPrimary: "#7ee7bf",
           colorBgBase: "#0b100f",

@@ -1,4 +1,4 @@
-import type { AssetPairRecord } from "./data";
+import type { ActiveAssetPairRecord, AssetPairRecord } from "./data";
 
 export interface ReduxStoreState {
   common: CommonState;
@@ -6,8 +6,9 @@ export interface ReduxStoreState {
 };
 
 export interface MarketState {
-  items: AssetPairRecord[];
-  openItems: AssetPairRecord[];
+  records: AssetPairRecord[];
+  openRecords: AssetPairRecord[];
+  activeRecord?: ActiveAssetPairRecord;
 }
 
 export interface CommonState {

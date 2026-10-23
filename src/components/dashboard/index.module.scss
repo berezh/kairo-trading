@@ -5,9 +5,11 @@
   display: grid;
   grid-template-areas: "market order"
           "market order"
+          "market order"
+          "market order"
           "market asset";
     grid-template-columns: 1fr 300px;
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(5, 1fr);
   gap: var(--layout-gap);
 
   > div{

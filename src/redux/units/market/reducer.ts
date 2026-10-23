@@ -3,25 +3,29 @@ import { createReducer } from "@reduxjs/toolkit";
 import { MarketActions } from "./action";
 
 const initialState: MarketState = {
-  items: [],
-  openItems: [],
+  records: [],
+  openRecords: [],
+  activeRecord: undefined,
 };
 
 export const MarketReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(MarketActions.init, (state, action) => {
-      state.items = action.payload;
+      state.records = action.payload;
     })
     .addCase(MarketActions.update, (state, action) => {
-      const index = state.items.findIndex(
+      const index = state.records.findIndex(
         (quote) => quote.symbol === action.payload.symbol,
       );
 
       if (index === -1) {
-        state.items.push(action.payload);
-        state.openItems.push({ ...action.payload });
+        state.records.push(action.payload);
+        state.openRecords.push({ ...action.payload });
       } else {
-        state.items[index] = action.payload;
+        state.records[index] = action.payload;
       }
+    })
+    .addCase(MarketActions.setActive, (state, action) => {
+      state.activeRecord = action.payload;
     });
 });

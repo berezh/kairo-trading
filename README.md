@@ -69,6 +69,10 @@ Keep these render callbacks inside a Client Component.
 
 ## Scripts
 
+The mock order form supports Market and Limit orders. Limit orders require a
+positive limit price at the selected pair's price precision; market orders hide
+that field. Previews include the order type and limit price when applicable.
+
 - `npm run dev` — start Next.js only
 - `npm run dev:ws` — launch the WebSocket mock first and Next.js together
 - `npm run mock:ws` — run the persistent-in-memory WebSocket mock
