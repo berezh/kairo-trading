@@ -1,10 +1,15 @@
+$height: 32px;
+
 .chart {
   width: 100%;
   min-width: 0;
-  height: 32px;
+  height: $height;
+  max-height: $height;
+  overflow: hidden;
 }
 
 .empty {
   display: inline-block;
-  height: 32px;
+  height: $height;
+  max-height: $height;
 }

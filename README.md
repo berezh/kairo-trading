@@ -2,18 +2,20 @@
 
 A Next.js app built with TypeScript, SCSS modules, Ant Design, and Redux Toolkit.
 
-## Getting started
-
-Install dependencies and start the development server:
+## One command
 
 ```bash
-npm install
-npm run dev:ws
+npm run launch
 ```
 
-This launches the WebSocket mock first, then Next.js via `npm run dev`, without
-waiting for mock readiness. Press Ctrl+C to stop both;
-if either process exits, the other is stopped as well.
+This command install dependencies, lint, run component and E2E tests, then run the mock and development server together
+
+
+## Productivity evidence
+
+Below is result of 10 sec manipulation with Whatchlist and CreateOrder widgets:
+
+![React Profiler screenshot](./public/images/react-profiler.jpg)
 
 ## Scripts
 
@@ -202,6 +204,7 @@ confirmation. Confirm price change
 reopens the preview using the displayed new price and recalculates the total;
 Cancel dismisses it without submitting. Further adverse changes require another
 confirmation. Submission checks the latest quote again before showing success.
+
 
 ## Ideas
 
