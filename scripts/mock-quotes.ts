@@ -7,6 +7,7 @@ import Randex from "randex";
 
 const MIN_DISCONNECT_DELAY_MS = 1_000;
 const MAX_DISCONNECT_DELAY_MS = 30_000;
+const WRONG_SEQ_FREAQENCY = 0.03; // 3% of the updates will have wrong sequence number
 
 const port = Number(process.env.MOCK_WS_PORT ?? 3002);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
@@ -75,7 +76,11 @@ function sendPair() {
     ts: Date.now(),
     seq: sequence++,
   };
-  pairs[pairIndex] = update;
+  if (Math.random() < WRONG_SEQ_FREAQENCY) {
+    update.seq = Math.max(0, pairs[pairIndex].seq - 1);
+  } else {
+    pairs[pairIndex] = update;
+  }
 
   const message = JSON.stringify(update);
   for (const socket of sockets.clients) {

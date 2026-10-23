@@ -21,7 +21,7 @@ export const MarketReducer = createReducer(initialState, (builder) => {
       if (index === -1) {
         state.records.push(action.payload);
         state.openRecords.push({ ...action.payload });
-      } else {
+      } else if (action.payload.seq > state.records[index].seq) {
         state.records[index] = action.payload;
       }
     })

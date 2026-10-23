@@ -63,6 +63,10 @@ The development quote feed connects to `ws://127.0.0.1:3002/mock/quotes`.
 The Node mock server maintains one shared in-memory snapshot and continues updating
 it even without connected browsers. Reloads and additional tabs receive the latest
 200 pairs before live updates. Restarting the mock server resets the data.
+`WRONG_SEQ_FREAQENCY` controls the probability of broadcasting a stale sequence
+(3% by default). These updates have a sequence below the pair's latest valid one
+and do not replace the server snapshot. The market reducer ignores updates whose
+sequence is not strictly newer than the stored record.
 The feed is not used in production.
 Each mock connection is closed after a random 1–30 seconds to simulate a disconnect.
 The browser retries after a random 1–5 seconds following closure (including failed attempts)
