@@ -28,11 +28,12 @@ const server = createServer((request, response) => {
 const sockets = new WebSocketServer({ server, path: "/mock/quotes" });
 
 sockets.on("connection", (socket) => {
+  console.log("\x1b[32mServer connected.\x1b[0m");
   socket.on("error", (error) => console.error("Mock quotes client error:", error));
   const disconnectDelay = Randex.number(MIN_DISCONNECT_DELAY_MS, MAX_DISCONNECT_DELAY_MS);
   const disconnectTimeout = setTimeout(() => {
     if (socket.readyState === WebSocket.OPEN) {
-      console.log("Simulating mock quotes disconnect.");
+      console.log("\x1b[31mServer disconnected.\x1b[0m");
       socket.close(1012, "Simulated reconnect");
     }
   }, disconnectDelay);

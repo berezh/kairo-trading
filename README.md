@@ -17,6 +17,7 @@ if either process exits, the other is stopped as well.
 
 ## Scripts
 
+- `npm run all` — install dependencies, lint, test, then run the mock and development server together
 - `npm run dev` — start Next.js only
 - `npm run dev:ws` — launch the WebSocket mock first and Next.js together
 - `npm run mock:ws` — run the persistent-in-memory WebSocket mock
@@ -24,6 +25,27 @@ if either process exits, the other is stopped as well.
 - `npm run start` — start the production server
 - `npm run lint` — run ESLint
 - `npm run lint:fix` — run ESLint with automatic fixes
+- `npm test` — run Jest and React Testing Library tests
+
+`npm run all` runs `npm install`, `npm run lint`, and Jest in serial mode
+(`--runInBand`), stopping if any step fails. Once those steps succeed, `mock:ws`
+and `dev` run concurrently without waiting for mock readiness; Ctrl+C stops both,
+and either process exiting stops the other. Ensure their ports are available.
+This command does not build or start a production server.
+
+## Component tests
+
+Jest uses `next/jest` with jsdom, stylesheet mocks, and the `@/` alias.
+`jest.setup.ts` adds jest-dom matchers and the browser APIs needed by Ant Design.
+The create-order tests render the real form with a fresh Redux store per test,
+covering Market Buy/Sell pricing, live updates, reconnection, delayed quote loading,
+Limit prefilling and precision, copying the reference price, and missing inputs.
+
+Run the focused suite with:
+
+```bash
+npm test -- src/components/widgets/createOrder/index.test.tsx
+```
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 

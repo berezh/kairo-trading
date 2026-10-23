@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "all": "npm install && npm run lint && npm test -- --runInBand && concurrently --kill-others --names mock,next \"npm run mock:ws\" \"npm run dev\"",
     "dev:ws": "concurrently --kill-others --names mock,next \"npm run mock:ws\" \"npm run dev\"",
     "dev": "next dev",
     "mock:ws": "tsx scripts/mock-quotes.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "test": "jest"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.13.0",
@@ -26,6 +28,13 @@
     "recharts": "^3.0.0"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.0",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
