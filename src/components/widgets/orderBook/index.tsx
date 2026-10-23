@@ -12,13 +12,14 @@ interface AssetPairRecordExtended extends AssetPairRecord {
   isUpdated: boolean;
   change: number;
   spread: number;
+  prevChange: number;
 }
 
 export default function OrderBookWidget() {
   const initData = useAppSelector(MarketSelectors.selectItems);
   const openItems = useAppSelector(MarketSelectors.selectOpenItems);
   const [data, setData] = useState<AssetPairRecordExtended[]>(() =>
-    initData.map((record) => ({ ...record, isUpdated: false, change: 0, spread: Number(record.ask) - Number(record.bid) })),
+    initData.map((record) => ({ ...record, isUpdated: false, change: 0, spread: Number(record.ask) - Number(record.bid), prevChange: 0 })),
   );
   
   const updatedCount = useMemo(()=> data.filter(record => record.isUpdated).length, [data]);
@@ -51,6 +52,7 @@ export default function OrderBookWidget() {
 
         const openingRecord = openItems.find(item => item.symbol === record.symbol);
         const mid = (Number(record.ask) + Number(record.bid)) / 2;
+        const prevMid = previous ? (Number(previous.ask) + Number(previous.bid)) / 2 : mid;
         const openingMid = openingRecord ? (Number(openingRecord.ask) + Number(openingRecord.bid)) / 2 : mid;
 
         const change = mid - openingMid;
@@ -59,6 +61,7 @@ export default function OrderBookWidget() {
           ...record,
           isUpdated,
           change,
+          prevChange: mid - prevMid,
           spread: Number(record.ask) - Number(record.bid),
         };
       });
@@ -92,12 +95,16 @@ export default function OrderBookWidget() {
             <th scope="col">Opening</th>
           </tr>
         )}
-        renderRow={({ key, ...rowProps }, record) => {          
+        renderRow={({ key, ...rowProps }, record) => {
+          let rowClassName = '';
+          if(record.isUpdated) {
+            rowClassName = record.prevChange > 0 ? styles.updatedPlus : styles.updatedMinus;
+          };
           return (
             <tr
               key={key}
               {...rowProps}
-              className={record.isUpdated ? styles.updated : ""}
+              className={rowClassName}
             >
               <th scope="row">
                 {record.symbol}

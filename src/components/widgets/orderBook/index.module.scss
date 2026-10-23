@@ -20,8 +20,12 @@
   border-radius: 0;
 }
 
-.updated {
+.updatedPlus {
   animation: quoteFlash 450ms ease-out;
+}
+
+.updatedMinus {
+  animation: quoteFlashMinus 450ms ease-out;
 }
 
 @keyframes quoteFlash {
@@ -29,8 +33,16 @@
   to { background-color: transparent; }
 }
 
+@keyframes quoteFlashMinus {
+  from { background-color: rgba(252, 59, 0, 0.1); }
+  to { background-color: transparent; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .updated {
+  .updatedPlus {
+    animation: none;
+  }
+  .updatedMinus {
     animation: none;
   }
 }
