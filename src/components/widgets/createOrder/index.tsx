@@ -1,9 +1,11 @@
 "use client";
 
-import { Button, Form, InputNumber, Radio, Select } from "antd";
+import { App, Button, Form, InputNumber, Radio, Select } from "antd";
 import type { OrderSide, OrderType } from "@/interfaces/order";
-import { useEffect } from "react";
-import { useAppSelector } from "@/redux/hooks";
+import { useEffect, useMemo } from "react";
+import { shallowEqual } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { DialogActions } from "@/redux/units/dialog/action";
 import { MarketSelectors } from "@/redux/units/market/selector";
 import { parsePairSymbol } from "@/utils/parsePairSymbol";
 import WidgetFrame from "@/components/widgets/frame";
@@ -19,6 +21,8 @@ type OrderFormValues = {
 };
 
 export default function CreateOrderWidget() {
+  const dispatch = useAppDispatch();
+  const { message } = App.useApp();
   const [form] = Form.useForm<OrderFormValues>();
   const activeRecord = useAppSelector(MarketSelectors.activeRecord);
   const connected = useAppSelector(CommonSelectors.connected);
@@ -31,15 +35,22 @@ export default function CreateOrderWidget() {
     }
   }, [activeRecord, form]);
 
-  const data = useAppSelector(MarketSelectors.selectItems);
-  const symbol = Form.useWatch("symbol", form) ?? data[0]?.symbol;
+  const symbols = useAppSelector(
+    (state) => MarketSelectors.records(state).map((record) => record.symbol),
+    shallowEqual,
+  );
+  const symbolOptions = useMemo(
+    () => symbols.map((symbol) => ({ value: symbol, label: symbol })),
+    [symbols],
+  );
+  const symbol = Form.useWatch("symbol", form) ?? symbols[0];
   const side = Form.useWatch("side", form) ?? "buy";
   const orderType = Form.useWatch("orderType", form) ?? "market";
   const quantity = Form.useWatch("quantity", form);
   const limitPrice = Form.useWatch("limitPrice", form);
   const pricePrecision = symbol?.includes("JPY") ? 3 : 5;
   const priceStep = 10 ** -pricePrecision;
-  const selectedQuote = data.find((quote) => quote.symbol === symbol);
+  const selectedQuote = useAppSelector(MarketSelectors.liveRecord(symbol ?? ""));
   const referencePrice =
     selectedQuote && Number(side === "buy" ? selectedQuote.ask : selectedQuote.bid);
   const orderPrice = orderType === "limit" ? limitPrice : referencePrice;
@@ -51,13 +62,31 @@ export default function CreateOrderWidget() {
       : undefined;
   const exchangeSymbol = symbol ? parsePairSymbol(symbol).exchangeSymbol : undefined;
 
+  const baseSymbol = symbol ? parsePairSymbol(symbol).baseSymbol : undefined;
+
   const handleSubmit = (values: OrderFormValues) => {
-    // message.success({
-    //   content: values.orderType === "limit"
-    //     ? `Mock ${values.side} limit order preview created for ${values.symbol} at ${values.limitPrice?.toFixed(pricePrecision)}. No real trade was placed.`
-    //     : `Mock ${values.side} market order preview created for ${values.symbol}. No real trade was placed.`,
-    //   duration: 4,
-    // });
+    const quote = selectedQuote;
+    const price = values.orderType === "limit"
+      ? values.limitPrice
+      : quote && Number(values.side === "buy" ? quote.ask : quote.bid);
+
+    if (!connected || typeof price !== "number" || !Number.isFinite(price) ||
+        price <= 0 || !Number.isFinite(values.quantity * price)) {
+      message.error("Cannot preview this order. Check the connection and order price.");
+      return;
+    }
+
+    dispatch(DialogActions.show({
+      name: "orderPreview",
+      data: {
+        symbol: values.symbol,
+        side: values.side,
+        orderType: values.orderType,
+        quantity: values.quantity,
+        price,
+        precision: values.symbol.includes("JPY") ? 3 : 5,
+      },
+    }));
   };
 
   const buttonDisabled = !(typeof total === "number" && total > 0) || !connected;
@@ -70,7 +99,7 @@ export default function CreateOrderWidget() {
         form={form}
         layout="vertical"
         initialValues={{
-          symbol: data[0]?.symbol,
+          symbol: symbols[0],
           side: "buy",
           quantity: 10,
           orderType: "market",
@@ -86,10 +115,7 @@ export default function CreateOrderWidget() {
           <Select
             showSearch
             optionFilterProp="label"
-            options={data.map((quote) => ({
-              value: quote.symbol,
-              label: quote.symbol,
-            }))}
+            options={symbolOptions}
           />
         </Form.Item>
 
@@ -154,7 +180,7 @@ export default function CreateOrderWidget() {
         )}
 
         <div className={styles.orderReference}>
-          <span>Total {side === "buy" ? "buy" : "sell"}</span>
+          <span>Estimated cost:</span>
           <strong className={side === "buy" ? styles.buyDirection : styles.sellDirection}>
             {total !== undefined && Number.isFinite(total)
               ? `${total.toFixed(pricePrecision)} ${exchangeSymbol}`
@@ -169,13 +195,9 @@ export default function CreateOrderWidget() {
           block
           disabled={buttonDisabled}
         >
-          Preview mock order
+          {side === "buy" ? "Buy" : "Sell"} {baseSymbol}
         </Button>
       </Form>
-
-      <p className={styles.orderDisclaimer}>
-        Simulated order only. No live trades will be placed.
-      </p>
     </WidgetFrame>
   );
 }

@@ -72,7 +72,7 @@ function sendPair() {
       socket.send(message);
     }
   }
-  timeout = setTimeout(sendPair, Randex.number(100, 300, { decimals: 1 }));
+  timeout = setTimeout(sendPair, Randex.number(50, 100, { decimals: 1 }));
 }
 
 function shutdown(exitCode = 0) {

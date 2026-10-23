@@ -5,6 +5,8 @@ import { App, ConfigProvider, theme } from "antd";
 import { useState, type ReactNode } from "react";
 import { Provider } from "react-redux";
 import { makeStore, type AppStore } from "@/redux/store";
+import OrderPreviewDialog from "@/components/dialogs/orderPreview";
+import PriceConfirmationDialog from "@/components/dialogs/priceConfirmation";
 
 const QuotesFeed = dynamic(() => import("../components/dataFeed"), { ssr: false });
 
@@ -36,6 +38,8 @@ export default function Providers({ children }: { children: ReactNode }) {
         <Provider store={store}>
           {children}
           <QuotesFeed />
+          <OrderPreviewDialog />
+          <PriceConfirmationDialog />
         </Provider>
       </App>
     </ConfigProvider>

@@ -72,6 +72,22 @@ Keep these render callbacks inside a Client Component.
 The mock order form supports Market and Limit orders. Limit orders require a
 positive limit price at the selected pair's price precision; market orders hide
 that field. Previews include the order type and limit price when applicable.
+Submitting opens a mock order preview with a fixed snapshot of the quantity,
+price, and total; live quotes do not change an open preview. No trade is placed.
+
+Named dialogs use the existing Redux store and Ant Design Modal. Register payload
+types in `src/interfaces/dialog.ts`, render an `AppDialog` with its `name` and a
+data render callback, and mount it inside the Redux provider. Open it with
+`dispatch(DialogActions.show({ name: "orderPreview", data }))` and close it with
+`dispatch(DialogActions.hide("orderPreview"))`. The close button, Escape, and
+backdrop also dismiss the dialog.
+
+If live ask rises above the preview price for Buy, or live bid falls below it for
+Sell, the preview is replaced by a Price confirmation dialog. This applies to
+both Market and Limit previews, with no tolerance threshold. Confirm price change
+reopens the preview using the displayed new price and recalculates the total;
+Cancel dismisses it without submitting. Further adverse changes require another
+confirmation. Submission checks the latest quote again before showing success.
 
 - `npm run dev` — start Next.js only
 - `npm run dev:ws` — launch the WebSocket mock first and Next.js together

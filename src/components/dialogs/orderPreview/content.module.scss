@@ -1,0 +1,30 @@
+.buyPrice {
+  color: var(--buy-color);
+}
+
+.sellPrice {
+  color: var(--sell-color);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.buyDirection {
+  --direction-color: var(--buy-color);
+}
+
+.sellDirection {
+  --direction-color: var(--sell-color);
+}
+
+.submitOrder {
+  &:not(:disabled):not(:global(.ant-btn-disabled)),
+  &:not(:disabled):not(:global(.ant-btn-disabled)):hover,
+  &:not(:disabled):not(:global(.ant-btn-disabled)):active {
+    color: #000;
+    border-color: var(--direction-color);
+    background: var(--direction-color);
+  }
+}

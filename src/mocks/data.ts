@@ -1,6 +1,9 @@
 import type { AssetPairRecord, AssetRecord } from "@/interfaces/data";
 import { parsePairSymbol } from "@/utils/parsePairSymbol";
 
+
+const MAX_PAIRS = 20;
+
 const sampleTimestamp = new Date().getTime();
 
 const seedPairs: AssetPairRecord[] = [
@@ -59,7 +62,7 @@ const pairSymbols = new Set(pairs.map(({ symbol }) => symbol));
 for (const base of currencies) {
     for (const exchange of currencies) {
         const symbol = base.symbol + exchange.symbol;
-        if (base.symbol === exchange.symbol || pairSymbols.has(symbol) || pairs.length >= 200) {
+        if (base.symbol === exchange.symbol || pairSymbols.has(symbol) || pairs.length >= MAX_PAIRS) {
             continue;
         }
 

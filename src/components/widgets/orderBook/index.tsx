@@ -19,8 +19,8 @@ interface AssetPairRecordExtended extends AssetPairRecord {
 
 export default function OrderBookWidget() {
   const dispatch = useAppDispatch();
-  const initData = useAppSelector(MarketSelectors.selectItems);
-  const openItems = useAppSelector(MarketSelectors.selectOpenItems);
+  const initData = useAppSelector(MarketSelectors.records);
+  const openItems = useAppSelector(MarketSelectors.openRecords);
   const [data, setData] = useState<AssetPairRecordExtended[]>(() =>
     initData.map((record) => ({ ...record, isUpdated: false, change: 0, spread: Number(record.ask) - Number(record.bid), prevChange: 0 })),
   );
