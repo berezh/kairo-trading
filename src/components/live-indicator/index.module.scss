@@ -1,0 +1,52 @@
+.connected,
+.disconnected {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.connected {
+  color: var(--accent);
+
+  .dot {
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+}
+
+.disconnected {
+  color: var(--sell-color);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status {
+  line-height: 1.4em;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .connected .dot {
+    animation: none;
+  }
+}

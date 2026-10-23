@@ -2,7 +2,7 @@
 
 import { App, Button, Form, InputNumber, Radio, Select } from "antd";
 import { useAppSelector } from "@/redux/hooks";
-import { MarketSelectors } from "@/redux/features/market";
+import { MarketSelectors } from "@/redux/units/market/selector";
 import WidgetFrame from "@/components/widgets/frame";
 import styles from "./index.module.scss";
 

@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { useAppDispatch } from "@/redux/hooks";
-import { MarketActions } from "@/redux/features/market";
+import { MarketActions } from "@/redux/units/market/action";
+import { CommonActions } from "@/redux/units/common/action";
 import type { AssetPairRecord } from "@/interfaces/data";
 
 function isQuote(value: unknown): value is AssetPairRecord {
@@ -34,6 +35,11 @@ export default function DataFeed() {
     const socket = new WebSocket(
       process.env.NEXT_PUBLIC_MOCK_WS_URL ?? "ws://127.0.0.1:3002/mock/quotes",
     );
+    let active = true;
+
+    socket.addEventListener("open", () => {
+      if (active) dispatch(CommonActions.setConnected(true));
+    });
 
     socket.addEventListener("message", (event: MessageEvent<unknown>) => {
       if (typeof event.data !== "string") {
@@ -59,15 +65,20 @@ export default function DataFeed() {
     });
 
     socket.addEventListener("error", (event) => {
+      if (active) dispatch(CommonActions.setConnected(false));
       console.error("The mock quotes WebSocket encountered an error.", event);
     });
     socket.addEventListener("close", (event) => {
+      if (!active) return;
+      dispatch(CommonActions.setConnected(false));
       if (!event.wasClean) {
         console.error("The mock quotes WebSocket closed unexpectedly. Run npm run mock:ws.", event);
       }
     });
 
     return () => {
+      active = false;
+      dispatch(CommonActions.setConnected(false));
       socket.close();
     };
   }, [dispatch]);

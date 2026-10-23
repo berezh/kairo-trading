@@ -2,45 +2,6 @@
   min-height: 100vh;
 }
 
-.header {
-  display: flex;
-  height: var(--header-height);
-  border-bottom: 1px solid var(--border);
-
-  &__content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: var(--content-width);
-    margin: 0 auto;
-    padding: 0 var(--layout-gap);
-  }
-
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-.brandMark {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border-radius: 11px;
-  color: #081713;
-  background: var(--accent);
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: -0.08em;
-}
-
 .main {  
   &__content {
     max-width: var(--content-width);

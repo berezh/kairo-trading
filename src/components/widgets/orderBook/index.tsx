@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useEffectEvent, useMemo, useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
-import { MarketSelectors } from "@/redux/features/market";
+import { MarketSelectors } from "@/redux/units/market/selector";
 import type { AssetPairRecord } from "@/interfaces/data";
 import WidgetFrame from "@/components/widgets/frame";
 import VirtualTable from "@/components/virtualTable";

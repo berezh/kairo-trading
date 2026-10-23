@@ -1,5 +1,15 @@
-import { MarketReducer } from "../redux/features/market";
+import type { AssetPairRecord } from "./data";
 
 export interface ReduxStoreState {
-  market: ReturnType<typeof MarketReducer>;
+  common: CommonState;
+  market: MarketState;
 };
+
+export interface MarketState {
+  items: AssetPairRecord[];
+  openItems: AssetPairRecord[];
+}
+
+export interface CommonState {
+  connected: boolean;
+}
