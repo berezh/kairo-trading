@@ -17,6 +17,15 @@ Below is result of 10 sec manipulation with Whatchlist and CreateOrder widgets:
 
 ![React Profiler screenshot](./public/images/react-profiler.jpg)
 
+## Features could be added next
+
+- User's order history
+- User's assets 
+- Pair's search and filtering
+- Pair's sorting
+- Favorites market
+- Spread chart
+
 ## Scripts
 
 - `npm run launch` — install dependencies, lint, run component and E2E tests, then run the mock and development server together
@@ -204,10 +213,3 @@ confirmation. Confirm price change
 reopens the preview using the displayed new price and recalculates the total;
 Cancel dismisses it without submitting. Further adverse changes require another
 confirmation. Submission checks the latest quote again before showing success.
-
-
-## Ideas
-
-- Search by pairs
-- Sort columns
-- Assets widget with values 
