@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "all": "npm install && npm run lint && npm test -- --runInBand && concurrently --kill-others --names mock,next \"npm run mock:ws\" \"npm run dev\"",
+    "launch": "npm install && npm run lint && npm test -- --runInBand && npm run test:e2e && concurrently --kill-others --names mock,next \"npm run mock:ws\" \"npm run dev\"",
     "dev:ws": "concurrently --kill-others --names mock,next \"npm run mock:ws\" \"npm run dev\"",
     "dev": "next dev",
     "mock:ws": "tsx scripts/mock-quotes.ts",
@@ -11,7 +11,9 @@
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "test": "jest"
+    "test": "jest",
+    "test:e2e": "playwright test",
+    "test:e2e:visible": "playwright test --headed"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.13.0",
@@ -28,6 +30,7 @@
     "recharts": "^3.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.3.0",

@@ -17,7 +17,7 @@ if either process exits, the other is stopped as well.
 
 ## Scripts
 
-- `npm run all` — install dependencies, lint, test, then run the mock and development server together
+- `npm run launch` — install dependencies, lint, run component and E2E tests, then run the mock and development server together
 - `npm run dev` — start Next.js only
 - `npm run dev:ws` — launch the WebSocket mock first and Next.js together
 - `npm run mock:ws` — run the persistent-in-memory WebSocket mock
@@ -26,9 +26,13 @@ if either process exits, the other is stopped as well.
 - `npm run lint` — run ESLint
 - `npm run lint:fix` — run ESLint with automatic fixes
 - `npm test` — run Jest and React Testing Library tests
+- `npm run test:e2e` — run Playwright browser tests in Chromium
+- `npm run test:e2e:visible` — run Playwright tests in a visible Chromium window
 
-`npm run all` runs `npm install`, `npm run lint`, and Jest in serial mode
-(`--runInBand`), stopping if any step fails. Once those steps succeed, `mock:ws`
+`npm run launch` runs `npm install`, `npm run lint`, Jest in serial mode
+(`--runInBand`), and `npm run test:e2e`, stopping if any step fails.
+Install Chromium first with `npx playwright install chromium`.
+Once those steps succeed, `mock:ws`
 and `dev` run concurrently without waiting for mock readiness; Ctrl+C stops both,
 and either process exiting stops the other. Ensure their ports are available.
 This command does not build or start a production server.
@@ -46,6 +50,25 @@ Run the focused suite with:
 ```bash
 npm test -- src/components/widgets/createOrder/index.test.tsx
 ```
+
+## Browser automation
+
+Install Chromium once, then run the Playwright suite:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+Playwright starts the development server on port 3000, or reuses a running server
+locally. The development server is required because the quote feed is disabled in
+production. The test intercepts the quote WebSocket, so no mock server is needed.
+It creates a Buy Limit order, opens the preview, injects an increased ask, confirms
+the new price, and submits the reopened preview. It verifies the updated price,
+estimated cost, dialog transitions, and final success message.
+
+Jest excludes the `e2e` directory. Playwright saves traces for failures in the
+ignored `test-results` directory.
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
