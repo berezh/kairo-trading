@@ -5,6 +5,9 @@ import { parsePairSymbol } from "../src/utils/parsePairSymbol";
 import type { AssetPairRecord } from "../src/interfaces/data";
 import Randex from "randex";
 
+const MIN_DISCONNECT_DELAY_MS = 1_000;
+const MAX_DISCONNECT_DELAY_MS = 30_000;
+
 const port = Number(process.env.MOCK_WS_PORT ?? 3002);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
   throw new Error("MOCK_WS_PORT must be an integer between 1 and 65535.");
@@ -25,6 +28,14 @@ const sockets = new WebSocketServer({ server, path: "/mock/quotes" });
 
 sockets.on("connection", (socket) => {
   socket.on("error", (error) => console.error("Mock quotes client error:", error));
+  const disconnectDelay = Randex.number(MIN_DISCONNECT_DELAY_MS, MAX_DISCONNECT_DELAY_MS);
+  const disconnectTimeout = setTimeout(() => {
+    if (socket.readyState === WebSocket.OPEN) {
+      console.log("Simulating mock quotes disconnect.");
+      socket.close(1012, "Simulated reconnect");
+    }
+  }, disconnectDelay);
+  socket.once("close", () => clearTimeout(disconnectTimeout));
   for (const pair of pairs) {
     socket.send(JSON.stringify(pair));
   }
