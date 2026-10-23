@@ -66,12 +66,13 @@ export default function DataFeed() {
           return;
         }
 
-        if (!isQuote(message)) {
-          console.error("Ignoring an invalid quote message from the mock quotes socket.");
+        if (!Array.isArray(message) || !message.every(isQuote)) {
+          console.error("Ignoring an invalid quote batch from the mock quotes socket.");
           return;
         }
 
-        dispatch(MarketActions.update(message));
+          dispatch(MarketActions.update(message));
+        
       });
 
       currentSocket.addEventListener("error", (event) => {

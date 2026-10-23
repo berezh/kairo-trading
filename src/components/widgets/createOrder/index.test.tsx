@@ -63,7 +63,7 @@ describe("CreateOrderWidget", () => {
     await user.click(screen.getByText("Sell", { exact: true }));
 
     act(() => {
-      store.dispatch(MarketActions.update({ ...quote, bid: "1.15000", seq: 2, ts: 2 }));
+      store.dispatch(MarketActions.update([{ ...quote, bid: "1.15000", seq: 2, ts: 2 }]));
     });
     expect(await screen.findByText("11.50000 USD")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Sell EUR" }));
@@ -91,7 +91,7 @@ describe("CreateOrderWidget", () => {
     const { store } = renderWidget({ records: [] });
     expect(screen.getByRole("button", { name: "Buy" })).toBeDisabled();
 
-    act(() => { store.dispatch(MarketActions.update(quote)); });
+    act(() => { store.dispatch(MarketActions.update([quote])); });
 
     expect(await screen.findByText("12.00000 USD")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Buy EUR" })).toBeEnabled();

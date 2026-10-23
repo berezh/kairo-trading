@@ -108,7 +108,12 @@ The development quote feed connects to `ws://127.0.0.1:3002/mock/quotes`.
 The Node mock server maintains one shared in-memory snapshot and continues updating
 it even without connected browsers. Reloads and additional tabs receive the latest
 200 pairs before live updates. Restarting the mock server resets the data.
-`WRONG_SEQ_FREAQENCY` controls the probability of broadcasting a stale sequence
+The feed sends one JSON array every 100 ms containing a random 30–50 ticks,
+controlled by `TICKS_PER_BATCH_RANGE`, cycling through all pairs (approximately
+300–500 ticks per second total). Initial snapshots are sent as a single JSON array
+containing all pairs. Snapshot ticks are additional
+messages, not part of the live tick rate. Actual throughput depends on server load.
+`WRONG_SEQ_FREQUENCY` controls the probability of broadcasting a stale sequence
 (3% by default). These updates have a sequence below the pair's latest valid one
 and do not replace the server snapshot. The market reducer ignores updates whose
 sequence is not strictly newer than the stored record.

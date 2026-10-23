@@ -14,15 +14,18 @@ export const MarketReducer = createReducer(initialState, (builder) => {
       state.records = action.payload;
     })
     .addCase(MarketActions.update, (state, action) => {
-      const index = state.records.findIndex(
-        (quote) => quote.symbol === action.payload.symbol,
+      const indexBySymbol = new Map(
+        state.records.map((record, index) => [record.symbol, index]),
       );
-
-      if (index === -1) {
-        state.records.push(action.payload);
-        state.openRecords.push({ ...action.payload });
-      } else if (action.payload.seq > state.records[index].seq) {
-        state.records[index] = action.payload;
+      for (const record of action.payload) {
+        const index = indexBySymbol.get(record.symbol);
+        if (index === undefined) {
+          indexBySymbol.set(record.symbol, state.records.length);
+          state.records.push(record);
+          state.openRecords.push({ ...record });
+        } else if (record.seq > state.records[index].seq) {
+          state.records[index] = record;
+        }
       }
     })
     .addCase(MarketActions.setActive, (state, action) => {

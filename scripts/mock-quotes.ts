@@ -7,7 +7,9 @@ import Randex from "randex";
 
 const MIN_DISCONNECT_DELAY_MS = 1_000;
 const MAX_DISCONNECT_DELAY_MS = 30_000;
-const WRONG_SEQ_FREAQENCY = 0.03; // 3% of the updates will have wrong sequence number
+const WRONG_SEQ_FREQUENCY = 0.03; // 3% of the updates will have wrong sequence number
+const TICKS_PER_BATCH_RANGE = [30, 50];
+const TICK_BATCH_INTERVAL_MS = 100;
 
 const port = Number(process.env.MOCK_WS_PORT ?? 3002);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
@@ -38,9 +40,7 @@ sockets.on("connection", (socket) => {
     }
   }, disconnectDelay);
   socket.once("close", () => clearTimeout(disconnectTimeout));
-  for (const pair of pairs) {
-    socket.send(JSON.stringify(pair));
-  }
+  socket.send(JSON.stringify(pairs));
 });
 sockets.on("error", (error) => {
   console.error("Mock quotes WebSocket server error:", error);
@@ -53,11 +53,11 @@ server.on("error", (error) => {
 
 let timeout: ReturnType<typeof setTimeout> | undefined;
 let stopped = false;
+let nextPairIndex = 0;
 
-function sendPair() {
-  if (stopped) return;
-
-  const pairIndex = Randex.number(0, INIT_PAIRS.length - 1);
+function createTick(): AssetPairRecord {
+  const pairIndex = nextPairIndex;
+  nextPairIndex = (nextPairIndex + 1) % INIT_PAIRS.length;
   const initialPair = INIT_PAIRS[pairIndex];
   const { exchangeSymbol } = parsePairSymbol(initialPair.symbol);
   const asset = INIT_ASSETS.find((item) => item.symbol === exchangeSymbol);
@@ -77,19 +77,27 @@ function sendPair() {
     ts: Date.now(),
     seq: sequence++,
   };
-  if (Math.random() < WRONG_SEQ_FREAQENCY) {
+  if (Math.random() < WRONG_SEQ_FREQUENCY) {
     update.seq = Math.max(0, pairs[pairIndex].seq - 1);
   } else {
     pairs[pairIndex] = update;
   }
 
-  const message = JSON.stringify(update);
+  return update;
+}
+
+function sendBatch() {
+  if (stopped) return;
+
+  const batchSize = Randex.number(TICKS_PER_BATCH_RANGE[0], TICKS_PER_BATCH_RANGE[1]);
+  const ticks = Array.from({ length: batchSize }, () => createTick());
+  const message = JSON.stringify(ticks);
   for (const socket of sockets.clients) {
     if (socket.readyState === WebSocket.OPEN) {
       socket.send(message);
     }
   }
-  timeout = setTimeout(sendPair, Randex.number(50, 100, { decimals: 1 }));
+  timeout = setTimeout(sendBatch, TICK_BATCH_INTERVAL_MS);
 }
 
 function shutdown(exitCode = 0) {
@@ -106,5 +114,5 @@ process.once("SIGINT", () => shutdown());
 process.once("SIGTERM", () => shutdown());
 server.listen(port, "127.0.0.1", () => {
   console.log(`Mock quotes server: ws://127.0.0.1:${port}/mock/quotes`);
-  timeout = setTimeout(sendPair, Randex.number(10, 30, { decimals: 1 }));
+  timeout = setTimeout(sendBatch, TICK_BATCH_INTERVAL_MS);
 });

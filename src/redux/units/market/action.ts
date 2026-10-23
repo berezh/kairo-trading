@@ -3,6 +3,6 @@ import { createAction } from "@reduxjs/toolkit";
 
 export const MarketActions = {
   init: createAction<AssetPairRecord[]>("market/init"),
-  update: createAction<AssetPairRecord>("market/update"),
+  update: createAction<AssetPairRecord[]>("market/update"),
   setActive: createAction<ActiveAssetPairRecord | undefined>("market/setActive"),
 };

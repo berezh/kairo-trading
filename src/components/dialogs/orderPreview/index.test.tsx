@@ -29,13 +29,13 @@ function renderDialog({
 } = {}) {
   const store = makeStore();
   store.dispatch(CommonActions.setConnected(connected));
-  store.dispatch(MarketActions.update({
+  store.dispatch(MarketActions.update([{
     symbol: "EURUSD",
     bid: "1.10000",
     ask: "1.20000",
     ts: 1,
     seq: 1,
-  }));
+  }]));
   if (opened) store.dispatch(DialogActions.show({ name: "orderPreview", data: preview }));
 
   render(

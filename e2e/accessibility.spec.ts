@@ -15,7 +15,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
     const quote = { symbol: "EURUSD", bid: "1.10000", ask: "1.20000", ts: 1, seq: 1 };
     await page.routeWebSocket("**/mock/quotes", (route) => {
       socket = route;
-      route.send(JSON.stringify(quote));
+      route.send(JSON.stringify([quote]));
     });
     await page.goto("/");
     const sell = page.getByRole("button", { name: "Sell EURUSD at 1.10000" });
@@ -42,7 +42,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
     await expect(preview).toBeHidden();
 
     if (!socket) throw new Error("The quote WebSocket did not connect.");
-    socket.send(JSON.stringify({ ...quote, bid: "1.20000", ask: "1.30000", ts: 2, seq: 2 }));
+    socket.send(JSON.stringify([{ ...quote, bid: "1.20000", ask: "1.30000", ts: 2, seq: 2 }]));
     const row = page.getByRole("row").filter({ has: page.getByRole("rowheader", { name: /EURUSD/ }) });
     await expect(row.getByRole("button", { name: "Buy EURUSD at 1.30000", exact: true })).toBeVisible();
     await expect(row.getByRole("img", { name: /EURUSD midpoint price history: .*?, up$/ })).toBeVisible();
@@ -55,7 +55,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
       );
       expect(statusAnimations).toEqual([]);
     }
-    socket.send(JSON.stringify({ ...quote, bid: "1.00000", ask: "1.10000", ts: 3, seq: 3 }));
+    socket.send(JSON.stringify([{ ...quote, bid: "1.00000", ask: "1.10000", ts: 3, seq: 3 }]));
     await expect(row.getByRole("button", { name: "Sell EURUSD at 1.00000", exact: true })).toBeVisible();
     await expect(row.getByRole("img", { name: /EURUSD midpoint price history: .*?, down$/ })).toBeVisible();
   });

@@ -2,7 +2,7 @@ import type { AssetPairRecord, AssetRecord } from "@/interfaces/data";
 import { parsePairSymbol } from "@/utils/parsePairSymbol";
 
 
-const MAX_PAIRS = 20;
+const MAX_PAIRS = 200;
 
 const sampleTimestamp = new Date().getTime();
 

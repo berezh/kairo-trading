@@ -13,7 +13,7 @@ test("confirms an increased Buy Limit price before submitting the order", async 
 
   await page.routeWebSocket("**/mock/quotes", (route) => {
     socket = route;
-    route.send(JSON.stringify(quote));
+    route.send(JSON.stringify([quote]));
   });
   await page.goto("/");
   await expect(page.getByRole("status")).toHaveText("Live");
@@ -33,7 +33,7 @@ test("confirms an increased Buy Limit price before submitting the order", async 
   await expect(preview.getByText("12.00000 USD", { exact: true })).toBeVisible();
 
   if (!socket) throw new Error("The quote WebSocket did not connect.");
-  socket.send(JSON.stringify({ ...quote, ask: "1.30000", ts: 2, seq: 2 }));
+  socket.send(JSON.stringify([{ ...quote, ask: "1.30000", ts: 2, seq: 2 }]));
 
   const confirmation = page.getByRole("dialog", { name: "Price confirmation", exact: true });
   await expect(confirmation).toBeVisible();

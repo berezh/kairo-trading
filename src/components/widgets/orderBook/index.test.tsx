@@ -37,7 +37,7 @@ const quote: AssetPairRecord = {
 
 function renderWidget(records: AssetPairRecord[] = [quote]) {
   const store = makeStore();
-  records.forEach((record) => store.dispatch(MarketActions.update(record)));
+  store.dispatch(MarketActions.update(records));
   const result = render(
     <Provider store={store}>
       <OrderBookWidget />
@@ -91,9 +91,9 @@ describe("OrderBookWidget", () => {
   it("samples quotes every second and highlights upward and downward changes", () => {
     const { store } = renderWidget();
     act(() => {
-      store.dispatch(MarketActions.update({
+      store.dispatch(MarketActions.update([{
         ...quote, bid: "1.20000", ask: "1.30000", ts: 2, seq: 2,
-      }));
+      }]));
       jest.advanceTimersByTime(999);
     });
     expect(screen.getByText("1.10000")).toBeInTheDocument();
@@ -108,9 +108,9 @@ describe("OrderBookWidget", () => {
     expect(within(row).getByText("10%")).toHaveClass("buyPrice");
 
     act(() => {
-      store.dispatch(MarketActions.update({
+      store.dispatch(MarketActions.update([{
         ...quote, bid: "1.00000", ask: "1.10000", ts: 3, seq: 3,
-      }));
+      }]));
     });
     act(() => { jest.advanceTimersByTime(1000); });
 
