@@ -3,7 +3,6 @@
 import { App, Button, Form, InputNumber, Radio, Select } from "antd";
 import type { OrderSide, OrderType } from "@/interfaces/order";
 import { useEffect, useMemo } from "react";
-import { shallowEqual } from "react-redux";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DialogActions } from "@/redux/units/dialog/action";
 import { MarketSelectors } from "@/redux/units/market/selector";
@@ -25,6 +24,7 @@ export default function CreateOrderWidget() {
   const { message } = App.useApp();
   const [form] = Form.useForm<OrderFormValues>();
   const activeRecord = useAppSelector(MarketSelectors.activeRecord);
+  const allRecords = useAppSelector(MarketSelectors.records);
   const connected = useAppSelector(CommonSelectors.connected);
 
   useEffect(() => {
@@ -35,21 +35,24 @@ export default function CreateOrderWidget() {
     }
   }, [activeRecord, form]);
 
-  const symbols = useAppSelector(
-    (state) => MarketSelectors.records(state).map((record) => record.symbol),
-    shallowEqual,
-  );
+  const symbol = Form.useWatch("symbol", form);
+  useEffect(() => {
+    if (allRecords.length > 0 && !symbol) {
+      form.setFieldsValue({ symbol: allRecords[0].symbol });
+    }
+  }, [allRecords, symbol, form]);
+
+
   const symbolOptions = useMemo(
-    () => symbols.map((symbol) => ({ value: symbol, label: symbol })),
-    [symbols],
+    () => allRecords.map(({symbol}) => ({ value: symbol, label: symbol })),
+    [allRecords],
   );
-  const symbol = Form.useWatch("symbol", form) ?? symbols[0];
   const side = Form.useWatch("side", form) ?? "buy";
   const orderType = Form.useWatch("orderType", form) ?? "market";
   const quantity = Form.useWatch("quantity", form);
   const limitPrice = Form.useWatch("limitPrice", form);
   const pricePrecision = symbol?.includes("JPY") ? 3 : 5;
-  const priceStep = 10 ** -pricePrecision;
+  const priceStep = Number(`1e-${pricePrecision}`);
   const selectedQuote = useAppSelector(MarketSelectors.liveRecord(symbol ?? ""));
   const referencePrice =
     selectedQuote && Number(side === "buy" ? selectedQuote.ask : selectedQuote.bid);
@@ -99,7 +102,7 @@ export default function CreateOrderWidget() {
         form={form}
         layout="vertical"
         initialValues={{
-          symbol: symbols[0],
+          symbol: "",
           side: "buy",
           quantity: 10,
           orderType: "market",
