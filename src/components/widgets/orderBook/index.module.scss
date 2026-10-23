@@ -7,6 +7,19 @@
   cursor: pointer;
 }
 
+.priceAction {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .sellPrice {
   color: var(--sell-color);
 }

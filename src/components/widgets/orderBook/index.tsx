@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useEffectEvent, useMemo, useState, type MouseEvent } from "react";
+import { useEffect, useEffectEvent, useMemo, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { MarketSelectors } from "@/redux/units/market/selector";
 import type { AssetPairRecord } from "@/interfaces/data";
@@ -80,11 +80,6 @@ export default function OrderBookWidget() {
     return () => clearInterval(interval);
   }, [ openItems]);
 
-  const handleSellClick = (event: MouseEvent<HTMLTableCellElement>, record: AssetPairRecord) => {
-    event.stopPropagation();
-    dispatch(MarketActions.setActive({ ...record, side: "sell" }));
-  };
-
   return (
     <WidgetFrame
       id="markets"
@@ -109,7 +104,7 @@ export default function OrderBookWidget() {
         )}
         renderRow={({ key, ...rowProps }, record) => {
           let rowClassName = '';
-          if(record.isUpdated) {
+          if(record.isUpdated && record.prevChange !== 0) {
             rowClassName = record.prevChange > 0 ? styles.updatedPlus : styles.updatedMinus;
           };
           return (
@@ -122,8 +117,32 @@ export default function OrderBookWidget() {
               <th scope="row">
                 {record.symbol}
               </th>
-              <td className={styles.sellPrice} onClick={(event) => handleSellClick(event, record)}>{record.bid}</td>
-              <td className={styles.buyPrice}>{record.ask}</td>
+              <td className={styles.sellPrice}>
+                <button
+                  type="button"
+                  className={styles.priceAction}
+                  aria-label={`Sell ${record.symbol} at ${record.bid}`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    dispatch(MarketActions.setActive({ ...record, side: "sell" }));
+                  }}
+                >
+                  {record.bid}
+                </button>
+              </td>
+              <td className={styles.buyPrice}>
+                <button
+                  type="button"
+                  className={styles.priceAction}
+                  aria-label={`Buy ${record.symbol} at ${record.ask}`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    dispatch(MarketActions.setActive({ ...record, side: "buy" }));
+                  }}
+                >
+                  {record.ask}
+                </button>
+              </td>
               <td>{numeral(record.spread).format("0.[00000]")}</td>
               <td className={record.change > 0 ? styles.buyPrice : record.change < 0 ? styles.sellPrice : ""}>{numeral(record.change).format("0.[0000]%")}</td>
               <td><RowPriceChart record={record} /></td>

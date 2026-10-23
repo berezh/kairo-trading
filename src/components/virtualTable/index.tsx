@@ -60,7 +60,7 @@ export default function VirtualTable<TItem>({
       <thead>
         {renderHeader({ "aria-rowindex": 1 })}
       </thead>
-      <tbody ref={scrollRef}>
+      <tbody ref={scrollRef} tabIndex={0} aria-label="Scrollable table rows">
         {paddingTop > 0 && (
           <tr aria-hidden="true" className={styles.spacer}>
             <td colSpan={columnCount} style={{ height: paddingTop }} />

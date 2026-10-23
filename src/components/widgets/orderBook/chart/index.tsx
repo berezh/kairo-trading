@@ -30,11 +30,15 @@ export default function RowPriceChart({ record }: { record: AssetPairRecordExten
   }
 
   if(history.points.length < 2) {
-    return null;
+    return <div className={styles.empty}></div>;
   }
 
   return (
-    <div className={styles.chart} role="img" aria-label={`${record.symbol} midpoint price history`}>
+    <div
+      className={styles.chart}
+      role="img"
+      aria-label={`${record.symbol} midpoint price history: ${history.points[0].mid} to ${lastPoint.mid}, ${lastPoint.mid > history.points[0].mid ? "up" : lastPoint.mid < history.points[0].mid ? "down" : "unchanged"}`}
+    >
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <LineChart data={history.points} margin={{ top: 3, right: 3, bottom: 3, left: 3 }} accessibilityLayer={false}>
           <XAxis dataKey="ts" type="number" domain={["dataMin", "dataMax"]} hide />

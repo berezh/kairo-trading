@@ -135,6 +135,23 @@ prefills a Buy Limit order; clicking its Sell (Bid) cell prefills a Sell Limit o
 Updated rows briefly flash and fade over 450 ms; the animation is disabled when
 reduced motion is requested.
 
+## Accessibility
+
+Watchlist bid and ask prices are native buttons with explicit Sell/Buy names.
+Use Tab to reach them and Enter or Space to select a pair and prefill the order
+form. The table body is also focusable for keyboard scrolling through virtualized
+rows. Forms and dialog actions use native or Ant Design keyboard controls, and
+interactive elements have a visible focus outline.
+
+Updated rows show persistent Up, Down, or Unchanged text alongside the pair, so
+price flashes do not rely on color alone. Chart accessible names include the first
+and last midpoint and trend direction. With `prefers-reduced-motion: reduce`,
+quote flashes and the Live pulse are disabled; other animations and transitions
+are reduced to near-instant durations and smooth scrolling is disabled.
+
+Playwright checks keyboard selection, order preview cancellation, visible focus,
+non-color movement labels, and reduced-motion behavior in both motion modes.
+
 `VirtualTable<TItem>` takes `items`, `columnCount`, and `getItemKey(item)` for stable
 row identity. `renderHeader(rowProps)` and `renderRow(rowProps, item)` each return
 a complete `<tr>` element. Spread the supplied props onto the header row to retain

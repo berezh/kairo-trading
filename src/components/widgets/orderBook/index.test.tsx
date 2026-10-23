@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import type { AssetPairRecord } from "@/interfaces/data";
 import { makeStore } from "@/redux/store";
@@ -54,7 +55,7 @@ describe("OrderBookWidget", () => {
 
     expect(screen.getByRole("heading", { name: "Watchlist" })).toBeInTheDocument();
     expect(screen.getAllByRole("columnheader")).toHaveLength(6);
-    const row = screen.getByRole("rowheader", { name: "EURUSD" }).closest("tr")!;
+    const row = screen.getByRole("rowheader", { name: /EURUSD/ }).closest("tr")!;
     expect(within(row).getByText("1.10000")).toBeInTheDocument();
     expect(within(row).getByText("1.20000")).toBeInTheDocument();
     expect(within(row).getByText("0.1")).toBeInTheDocument();
@@ -82,7 +83,7 @@ describe("OrderBookWidget", () => {
   it("selects Sell when the bid is clicked without invoking row selection", () => {
     const { store } = renderWidget();
 
-    fireEvent.click(screen.getByRole("cell", { name: "1.10000" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sell EURUSD at 1.10000" }));
 
     expect(store.getState().market.activeRecord).toMatchObject({ ...quote, side: "sell" });
   });
@@ -95,15 +96,16 @@ describe("OrderBookWidget", () => {
       }));
       jest.advanceTimersByTime(999);
     });
-    expect(screen.getByRole("cell", { name: "1.10000" })).toBeInTheDocument();
-    expect(screen.queryByRole("cell", { name: "1.30000" })).not.toBeInTheDocument();
+    expect(screen.getByText("1.10000")).toBeInTheDocument();
+    expect(screen.queryByText("1.30000")).not.toBeInTheDocument();
 
     act(() => { jest.advanceTimersByTime(1); });
 
-    expect(screen.getByRole("cell", { name: "1.30000" })).toBeInTheDocument();
+    expect(screen.getByText("1.30000")).toBeInTheDocument();
     expect(screen.getByText("(1 updated / sec)")).toBeInTheDocument();
-    const row = screen.getByRole("rowheader", { name: "EURUSD" }).closest("tr")!;
+    const row = screen.getByRole("rowheader", { name: /EURUSD/ }).closest("tr")!;
     expect(row).toHaveClass("updatedPlus");
+    expect(within(row).getByText("Up")).toBeInTheDocument();
     expect(within(row).getByText("10%")).toHaveClass("buyPrice");
 
     act(() => {
@@ -113,9 +115,26 @@ describe("OrderBookWidget", () => {
     });
     act(() => { jest.advanceTimersByTime(1000); });
 
-    expect(screen.getByRole("cell", { name: "1.00000" })).toBeInTheDocument();
+    expect(screen.getByText("1.00000")).toBeInTheDocument();
     expect(row).toHaveClass("updatedMinus");
+    expect(within(row).getByText("Down")).toBeInTheDocument();
     expect(within(row).getByText("-10%")).toHaveClass("sellPrice");
+  });
+
+  it("supports keyboard activation of Sell and Buy actions", async () => {
+    const { store } = renderWidget();
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
+    await user.tab();
+    expect(screen.getByLabelText("Scrollable table rows")).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Sell EURUSD at 1.10000" })).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(store.getState().market.activeRecord?.side).toBe("sell");
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Buy EURUSD at 1.20000" })).toHaveFocus();
+    await user.keyboard(" ");
+    expect(store.getState().market.activeRecord?.side).toBe("buy");
   });
 
   it("clears the sampling interval on unmount", () => {
